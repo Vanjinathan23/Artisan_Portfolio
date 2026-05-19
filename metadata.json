@@ -1,0 +1,6 @@
+{
+  "name": "Artisana — Handcrafted with Soul",
+  "description": "Luxury artisan portfolio for handcrafted pottery, jewelry, and textiles.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
