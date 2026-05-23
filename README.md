@@ -1,252 +1,479 @@
-<!--
-   Artisana — Cinematic Artisan Portfolio Website
-   Designed with soul. Crafted with intention.
--->
-
 <div align="center">
-  
-  <!-- Branding Header -->
-  <p align="center">
-    <samp>A E S T H E T I C · M O T I O N · C R A F T</samp>
-  </p>
-  
-  # 🏺 ARTISANA
-  
-  ### *Where Craft Becomes Art*
-  
-  **A cinematic, editorial-grade storytelling portfolio designed for luxury handcrafted pottery, jewelry, paintings, and textiles.**
 
-  [![React](https://img.shields.io/badge/React-19.0-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
-  [![Vite](https://img.shields.io/badge/Vite-6.2-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev)
-  [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.0-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
-  [![Motion](https://img.shields.io/badge/Motion-12.2-FF007F?style=flat-square&logo=framer&logoColor=white)](https://motion.dev)
-  [![Lenis](https://img.shields.io/badge/Smooth_Scroll-Lenis-E25A3F?style=flat-square)](https://github.com/darkroomengineering/lenis)
-  [![License](https://img.shields.io/badge/License-Apache_2.0-blue?style=flat-square)](LICENSE)
+# ARTISANA
 
-  ---
+*A cinematic artisan portfolio — where craft becomes art.*
 
-  [🏛️ Explore Live Experience](https://github.com/Vanjinathan23/Artisan_Portfolio) · [🎥 View Cinematic Walkthrough](#project-preview) · [💬 Request Commission](#installation--setup)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white) ![Google Fonts](https://img.shields.io/badge/Google_Fonts-4285F4?style=for-the-badge&logo=google&logoColor=white) ![Status](https://img.shields.io/badge/Status-Live-B85C38?style=for-the-badge) ![Design](https://img.shields.io/badge/Design-Cinematic-1E1208?style=for-the-badge)
+
+[View Live Demo](#) · [Report Bug](#) · [Request Feature](#)
+
+---
 
 </div>
 
-<br />
+## ✦ The Philosophy Behind This Project
 
----
+> *"Most portfolio websites present craft as a catalogue. 
+> Artisana presents it as a living story — one that begins 
+> before the first scroll and continues long after 
+> the piece has found its home."*
 
-## 📽️ Project Preview
+Traditional artisan portfolios are flat image grids with generic product names. They communicate nothing about the maker's identity, process, or philosophy. Artisana was built to close that gap — turning a portfolio into a cinematic journey that converts visitors into genuine enquiries.
+
+Every design decision in this project was made with one question in mind: does this feel like it was made by hand? The warm ivory color system, the Cormorant Garamond typography, the draggable process carousel, the custom cursor — each detail communicates craft before a single product is seen.
+
+## 🎬 Live Experience
+
+### Demo
+> 🔗 **[Live Site →](#)** *(replace with actual deployed URL)*
+
+### Preview
 
 <div align="center">
-  
-  <!-- Placeholder for cinematic gif/image -->
-  <img src="src/assets/images/collection_pottery_vessel_1779208861961.png" alt="Artisana Cover Image" width="100%" style="border-radius: 4px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);" />
-  
-  <p align="center">
-    <i>An immersive digital gallery featuring an interactive custom cursor, fluid typography, and premium physics-based motion.</i>
-  </p>
-  
-  <br />
-  
-  <!-- Inline carousel of features -->
-  <table>
-    <tr>
-      <td width="33%"><img src="src/assets/images/slow_drying_process_1779208490709.png" alt="Slow drying process" style="border-radius: 2px;" /><br /><center><small><b>01. Slow Crafting</b></small></center></td>
-      <td width="33%"><img src="src/assets/images/bisque_fire_process_1779208509777.png" alt="Bisque firing" style="border-radius: 2px;" /><br /><center><small><b>02. Firing Rituals</b></small></center></td>
-      <td width="33%"><img src="src/assets/images/glazing_ritual_process_1779208531913.png" alt="Glazing" style="border-radius: 2px;" /><br /><center><small><b>03. Material Selection</b></small></center></td>
-    </tr>
-  </table>
+
+| Hero — Split Screen | Craft DNA Scanner |
+|---|---|
+| ![Hero](./screenshots/hero.png) | ![DNA](./screenshots/dna.png) |
+
+| Gallery — Bento Grid | Piece Memory Page |
+|---|---|
+| ![Gallery](./screenshots/gallery.png) | ![Memory](./screenshots/memory.png) |
 
 </div>
 
----
+> *Screenshots stored in `/screenshots/` directory. Run locally or visit the live demo to see all animations in full.*
 
-## 📜 About The Project
+## ✨ Features
 
-Most portfolios are built like static spreadsheets—cold, grid-locked, and indifferent. 
+### Core Portfolio Experience
 
-**Artisana** was born out of a rebellion against the ordinary. It is an emotional, cinematic storefront and canvas designed specifically for creators who build with their hands. For potters, painters, jewelry designers, and weavers, their work is not just a list of specifications. It is a lineage of patience, materials, and time.
+- [x] **Cinematic 3-Panel Split Hero** — Portrait · Text · Craft image. Black & white artisan portrait with hover color reveal.
+- [x] **Glassmorphism Navbar** — Transparent on hero, frosted blur on scroll with smooth transition.
+- [x] **Custom Dual Cursor** — Terracotta dot with lagging ring. Transforms on hover states and carousel drag mode.
+- [x] **Animated Preloader** — Letter-by-letter stagger reveal with percentage counter and full-screen wipe exit.
+- [x] **Scroll Progress Bar** — Thin terracotta line tracking read progress across the full page.
+- [x] **Draggable Process Carousel** — Touch and mouse drag support with live progress bar indicator.
+- [x] **Bento Gallery Grid** — 12-column editorial grid layout with category filters and fullscreen modal.
+- [x] **Editorial Story Blocks** — Alternating image + prose layout with emotional product descriptions.
+- [x] **Grain Texture Overlay** — SVG fractal noise fixed layer for subconscious premium feel.
+- [x] **Testimonial Auto-Slider** — 5-card carousel with dot navigation and hover-pause.
+- [x] **Floating WhatsApp Button** — Pulsing ring animation with reveal label on hover. Direct enquiry link.
+- [x] **Animated Contact Form** — Floating labels, validation, success state. Zero backend required.
+- [x] **Scroll Reveal System** — IntersectionObserver-powered fade + slide animations on all sections.
+- [x] **Marquee Ticker** — Infinite scrolling craft category strip with hover-pause.
+- [x] **Fully Responsive** — Mobile-first design, tested at 375px, 768px, 1024px, 1440px.
 
-Artisana translates this physical presence into digital soul:
-* **The Story Over The Grid**: Instead of plain galleries, each piece is presented with its backstory, inspiration, and crafting time.
-* **The Rhythm of Slow Motion**: Powered by custom easing and smooth scroll physics, navigation feels heavy and intentional, mirroring the tactile rhythm of shaping clay or throwing shuttle.
-* **Tactile Interactions**: A magnetic cursor system and soft preloader build anticipation, preparing the viewer for a gallery experience rather than a hurried webpage scroll.
+### Three Unique Features (Never Seen Before in Artisan Portfolios)
 
----
+#### 1. 🕐 The Waiting Room
+> *A live commission availability board — like a Hermès waitlist made visual.*
 
-## ✨ Core Features
+- Shows 5 commission slots with real-time visual status (in-progress vs available)
+- Hovering a taken slot reveals the piece being made and its origin city — anonymously
+- Available slots open a waitlist form modal with craft type, timeline, and brief — goes straight to artisan
 
-| Feature | Description | Implementation |
-| :--- | :--- | :--- |
-| **Cinematic Hero** | A dual-panel entry splitting tactile visuals from bold, editorial storytelling text. | `Tailwind Grid` + `Motion.div` stagger |
-| **Lenis Smooth Scroll** | Eliminates rigid browser scrolling, replacing it with fluid, momentum-based travel. | `lenis` core engine initialization |
-| **Physics Custom Cursor** | A dual-ring cursor with magnetic hovering states and organic drag notifications. | `useMotionValue` + `useSpring` |
-| **Glassmorphism Navbar** | An elegant, floating header that shifts opacity and blurs on scroll. | `IntersectionObserver` & state logic |
-| **Masonry Collection Grid** | An asymmetric gallery layout grouping products in natural, editorial dimensions. | CSS Grid spans + `layout` transitions |
-| **Detailed Storytelling Modal** | Interactive detail cards that emerge smoothly to present craft background details. | `AnimatePresence` modal overlays |
-| **Responsive Continuity** | Fluid layouts scaling smoothly from ultra-wide 4K monitors down to mobile viewports. | Tailwind fluid typography utilities |
-| **WhatsApp Enquiry Pipeline** | Direct-to-artisan communication pre-populated with item detail links. | Direct WhatsApp API query integration |
+#### 2. 🧬 Craft DNA Scanner
+> *A 5-question poetic personality quiz that matches you to the piece made for someone exactly like you.*
 
----
+- Questions are emotional, not transactional: "What time of day do you feel most like yourself?"
+- Scoring engine maps answers across 4 craft types (pottery, jewelry, painting, textile) and reveals a result
+- Result screen shows your matched piece, your "craft archetype" identity, and a direct WhatsApp enquiry pre-filled with your match
 
-## 🎨 Design Philosophy
+#### 3. 📜 The Piece's Journey
+> *Every sold piece receives a permanent digital provenance page — accessible by a QR code given to its owner.*
+
+- Each piece's memory page shows: date made, time started, weather that morning, material origin, artisan's personal note
+- Lives at `/piece/:id` — a standalone route separate from the portfolio, designed to feel like opening a handwritten letter
+- The physical object and its digital soul are permanently linked. A purchase becomes a living heirloom.
+
+## 🎨 Design System
+
+### Color Palette
+
+| Role | Name | Hex | Usage |
+|------|------|-----|-------|
+| Primary Background | Warm Ivory | `#FAF7F2` | Default page bg |
+| Secondary Background | Linen | `#F2EBE0` | Section alternation |
+| Card Background | Parchment | `#EDE3D4` | Cards, modals, inputs |
+| Dark Background | Deep Walnut | `#1E1208` | Hero, process, contact |
+| Primary Text | Espresso Brown | `#2C1A0E` | All headings & body |
+| Secondary Text | Warm Umber | `#6B4F3A` | Subtitles, paragraphs |
+| Muted Text | Dusty Clay | `#9C836A` | Captions, labels |
+| Primary Accent | Terracotta | `#B85C38` | CTAs, highlights, cursor |
+| Secondary Accent | Raw Copper | `#A0672A` | Icons, dividers, tags |
+| Soft Accent | Warm Sand | `#D4A97A` | Hover states, card borders |
+| Borders | Oat | `#DDD0BC` | All dividers and edges |
+| Dark Text | Cream | `#F5EFE6` | Text on dark backgrounds |
+
+### Typography
+
+| Font | Role | Weights | Used For |
+|------|------|---------|----------|
+| Cormorant Garamond | Display / Headings | 300, 400, 500, 600, Italic | All H1–H4, quotes, large numbers |
+| Jost | Body / UI | 300, 400, 500, 600 | Body text, labels, buttons, nav |
+| Instrument Serif | Accent Italic | Italic only | Testimonial quotes, accent phrases |
+
+> *Font selection rationale: Cormorant Garamond brings old-world elegance with modern refinement — used by high-end publication design and luxury brand sites. Jost provides clean geometric structure for UI elements. Instrument Serif adds personality to emotional accent moments without overusing decorative type.*
+
+### Spacing & Layout
+
+All spacing uses CSS `clamp()` for fluid scaling between mobile and desktop. Base unit: 8px. Max content width: 1320px. Section padding: `clamp(80px, 10vw, 140px)`. No fixed pixel breakpoints for spacing — everything breathes proportionally.
+
+## 🛠 Tech Stack
+
+| Technology | Purpose | Version |
+|-----------|---------|---------|
+| React | UI framework, component architecture | 18+ |
+| React Router DOM | Client-side routing (`/piece/:id`) | 6+ |
+| CSS3 Custom Properties | Design token system, all styling | Native |
+| CSS Animations & Keyframes | Preloader, marquee, cursor, pulses | Native |
+| IntersectionObserver API | Scroll reveal animations | Native |
+| CSS clamp() | Fluid responsive spacing & typography | Native |
+| Unsplash (direct URLs) | All photography, no API key | Free |
+| Google Fonts | Cormorant Garamond, Jost, Instrument Serif | Free |
+| Shields.io | README badges | Free |
+
+> **No build complexity.** No TypeScript (kept lean for speed). No CSS framework (full custom design system). No external animation library (pure CSS + RAF). Every animation is hand-written for performance and precision.
+
+## 📁 Project Structure
 
 ```
-  WALNUT (#251F1C)   ──────   Deep, earthy base providing luxury contrast.
-  TERRA (#B85C38)    ──────   Warm terracotta orange representing fire and clay.
-  CREAM (#FBF8F3)    ──────   Soft off-white background mirroring unglazed bisque.
-  LINEN (#F4ECE1)    ──────   Textured warm grey for structured panels.
-  SAND (#E0D3C1)     ──────   Muted gold highlighting interactive details.
-```
-
-### 🏺 Handmade-Inspired UI
-Every line, border, and background color has been chosen to reflect tactile materials. We intentionally avoid bright synthetic primaries, leaning instead on warm mineral pigments: clays, wood ash, copper oxide, and raw linen.
-
-### ✍️ Editorial Typography & Layout
-Inspired by premium lifestyle magazines, the visual system pairs clean, geometric sans-serif details with large, airy serif titles. This hierarchy creates a balance between historical craft and modern minimal luxury.
-
-### ⏳ Cinematic Motion
-We believe animation should not distract, but immerse. Transitions leverage slow, high-damping springs (`stiffness: 150`, `damping: 20`) to create a sensation of physical mass and weight.
-
----
-
-## 🛠️ Tech Stack
-
-```
-   ┌─────────────────────────────────────────────────────────────┐
-   │                       FRONTEND CORE                         │
-   ├───────────────┬──────────────────────────────┬──────────────┤
-   │ React 19      │ TypeScript                   │ Vite         │
-   └───────────────┴──────────────────────────────┴──────────────┘
-   ┌─────────────────────────────────────────────────────────────┐
-   │                     MOTION & DESIGN                         │
-   ├───────────────┬──────────────────────────────┬──────────────┤
-   │ Motion / React│ Lenis Scroll                 │ Tailwind v4  │
-   └───────────────┴──────────────────────────────┴──────────────┘
-```
-
-* **Framework:** React 19 (Hooks, `useMemo`, `useRef`, custom state)
-* **Build System:** Vite (Lightning-fast HMR and build pipelines)
-* **Styling Engine:** Tailwind CSS v4 (Leveraging native CSS variables and modern grid utilities)
-* **Animation System:** Motion / React (Framer Motion) for layouts, springs, and exit animations
-* **Scrolling Physics:** Lenis (For buttery-smooth, hardware-accelerated inertia)
-* **Iconography:** Lucide Icons (Minimal, clean vector assets)
-
----
-
-## 📂 Folder Structure
-
-```
-artisana-handcrafted-with-soul/
+artisana/
+├── public/
+│   └── index.html              # Root HTML, Google Fonts loaded here
+│
+├── screenshots/                # README preview images
+│   ├── hero.png
+│   ├── dna.png
+│   ├── gallery.png
+│   └── memory.png
+│
 ├── src/
-│   ├── assets/
-│   │   └── images/          # Compressed artisan process images
-│   ├── App.tsx              # Main entry point housing app layout and state
-│   ├── main.tsx             # React DOM root setup
-│   └── index.css            # Custom fonts, Tailwind styles, and easing definitions
-├── .env.example             # Environment template
-├── index.html               # Main HTML wrapper (Editorial Serif font imports)
-├── package.json             # Manifest and dependencies
-├── tsconfig.json            # Strict TypeScript configuration
-└── vite.config.ts           # Vite compile and build configurations
+│   ├── App.jsx                 # Root component, React Router setup
+│   │
+│   ├── components/             # All UI components
+│   │   ├── Preloader.jsx       # Loading animation sequence
+│   │   ├── Cursor.jsx          # Custom dual cursor (dot + ring)
+│   │   ├── Navbar.jsx          # Nav + hamburger + mobile overlay
+│   │   ├── Hero.jsx            # 3-panel split hero orchestrator
+│   │   │   ├── HeroPortrait.jsx    # Left: artisan BW portrait
+│   │   │   ├── HeroText.jsx        # Center: headline + CTAs
+│   │   │   └── HeroCraft.jsx       # Right: craft image + cards
+│   │   ├── Marquee.jsx         # Infinite scrolling craft ticker
+│   │   ├── About.jsx           # Artisan story + stats grid
+│   │   ├── Process.jsx         # Drag carousel — 4 craft steps
+│   │   ├── WaitingRoom.jsx     # ★ Feature 1: Commission board
+│   │   ├── Gallery.jsx         # Bento grid + category filters
+│   │   ├── GalleryModal.jsx    # Fullscreen piece preview
+│   │   ├── Stories.jsx         # Editorial story blocks (3 pieces)
+│   │   ├── CraftDNA.jsx        # ★ Feature 2: Personality quiz
+│   │   ├── Philosophy.jsx      # 3-pillar craft belief section
+│   │   ├── PieceJourney.jsx    # ★ Feature 3: Provenance showcase
+│   │   ├── PieceMemory.jsx     # ★ Feature 3: Standalone /piece/:id
+│   │   ├── Testimonials.jsx    # Auto-sliding review cards
+│   │   ├── Contact.jsx         # Animated form + details
+│   │   ├── Footer.jsx          # Brand footer + navigation
+│   │   └── WhatsApp.jsx        # Floating enquiry button
+│   │
+│   ├── data/                   # All static content as JS modules
+│   │   ├── galleryItems.js     # 8 portfolio pieces with metadata
+│   │   ├── processSteps.js     # 4-step craft process data
+│   │   ├── testimonials.js     # 5 customer testimonials
+│   │   ├── stories.js          # 3 featured editorial pieces
+│   │   ├── waitingRoomData.js  # Commission queue + slot config
+│   │   ├── craftDNAData.js     # Quiz questions + scoring logic
+│   │   └── pieceJourneyData.js # 3 sold pieces provenance records
+│   │
+│   ├── hooks/                  # Custom React hooks
+│   │   ├── useScrollProgress.js      # Page scroll % tracking
+│   │   ├── useIntersectionObserver.js # Scroll reveal (.rv system)
+│   │   └── useCursor.js              # Cursor position + RAF loop
+│   │
+│   └── styles/
+│       └── main.css            # Full design system (~1200 lines)
+│                               # CSS custom properties at :root
+│                               # All component styles
+│                               # All animations & keyframes
+│                               # All responsive breakpoints
+│
+├── package.json
+├── .gitignore
+└── README.md                   # This file
 ```
 
----
-
-## 🚀 Installation & Setup
-
-Get Artisana running locally in under two minutes:
+## 🚀 Getting Started
 
 ### Prerequisites
-* [Node.js](https://nodejs.org/) (v18 or higher recommended)
-* npm (comes bundled with Node)
 
-### Step-by-Step
+```bash
+node >= 16.0.0
+npm >= 8.0.0
+```
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/Vanjinathan23/Artisan_Portfolio.git
-   cd Artisan_Portfolio
-   ```
+### Installation
 
-2. **Install Dependencies**
-   ```bash
-   npm install
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/artisana.git
 
-3. **Configure Environment** (Optional)
-   ```bash
-   cp .env.example .env.local
-   ```
+# Navigate into the project
+cd artisana
 
-4. **Launch Local Server**
-   ```bash
-   npm run dev
-   ```
-   *The experience will now be live at* `http://localhost:3000/`
+# Install dependencies
+npm install
 
-5. **Build for Production**
-   ```bash
-   npm run build
-   ```
+# Start the development server
+npm run dev
+# or
+npm start
+```
 
----
+The site will open at `http://localhost:3000`
 
-## 📱 Responsive Continuity
+### Build for Production
 
-Artisana does not compromise. Every viewport is treated as a unique layout challenge:
-* **The Desktop Experience:** Multi-column grids, hovering detail highlights, immersive custom cursor ring, and smooth inertia scroll.
-* **The Tablet Experience:** Responsive flex structures shifting to touch-friendly interaction dimensions while retaining the rich background gradients.
-* **The Mobile Experience:** Simplified single-column timeline, touch scroll with fallback gesture listeners, and a responsive overlay navigation panel.
+```bash
+# Create optimised production build
+npm run build
 
----
+# Preview the production build locally
+npm run preview
+```
 
-## ⚡ Performance Optimizations
+### Navigate the Unique Features
 
-To deliver an award-winning user experience, the website maintains clean, lightweight mechanics:
-* **Optimized Image Deliveries**: Core gallery and process cards utilize modern web compressions to load instantly without rendering delays.
-* **Hardware-Accelerated Physics**: Custom springs run on independent GPU threads via Framer Motion to prevent screen tearing and layout shifts.
-* **Passive Event Listeners**: Window scrolls and drag handlers leverage passive declarations to ensure browser thread smoothness.
+| Feature | How to access |
+|---------|---------------|
+| Waiting Room | Scroll past the Process carousel section |
+| Craft DNA Scanner | Scroll past the Stories section, click "Discover Your Piece →" |
+| Piece Journey | Scroll past the Philosophy section |
+| Piece Memory Page | Click "View Memory Page →" on any piece card, or visit `/piece/AM-001` directly |
 
----
+> **No environment variables required.** No API keys. No `.env` file needed. The project runs entirely with static data and free CDN resources.
 
-## 🔮 Future Enhancements
+## 🌟 Three Features Nobody Else Has
 
-* 🌗 **Chiaroscuro Mode:** A light/dark contrast switcher inspired by high-contrast studio shadows.
-* 📦 **Artisan Dashboard:** A clean, minimal writer interface to log details, firing times, and materials.
-* ✍️ **AI Storyteller Integration:** A generative assistant to help creators write evocative bios for their creations based on textures and firing techniques.
-* 🌐 **Multi-lingual Contexts:** Japanese, French, and Hindi localizations to support global artisan stories.
+*These are not standard portfolio features. They were designed from scratch to solve three specific problems that no artisan website currently addresses.*
 
 ---
 
-## 🏛️ Credits
+### 🕐 Feature 1 — The Waiting Room
+**The Problem:** Artisan websites show available work but give no signal of demand, exclusivity, or process timeline. Visitors browse and leave without understanding the true nature of commission work.
 
-* **Editorial Layouts:** Inspired by modern architectural digest covers and luxury catalogs.
-* **Tactile Inspiration:** Rooted in traditional ceramic studios of Shigaraki (Japan) and Rajasthan (India).
-* **Open Source Gems:** A massive thank you to the creators of `lenis` and `motion` for enabling fluid movement on the web.
+**The Solution:** A live commission board showing exactly how many slots are available this month, what is currently being made (anonymously), and how long the wait would be. Like a sushi counter or a Hermès appointment — scarcity becomes visible, and that visibility creates desire.
+
+**User Flow:**
+1. Visitor sees the board — 3 taken slots + 2 available
+2. Hovering a taken slot reveals the piece name + origin city
+3. Clicking an available slot opens a waitlist form
+4. Form captures: name, email, craft type, vision brief, timeline
+5. On submit: confirmation with a reference number (SLOT-004)
 
 ---
 
-## 👤 Author
+### 🧬 Feature 2 — Craft DNA Scanner
+**The Problem:** Most visitors browse a gallery and leave without finding personal relevance. They see beautiful work but don't know which piece is *for them*. Generic galleries create aesthetic appreciation but not emotional connection.
 
-<table border="0">
-  <tr>
-    <td width="110px">
-      <img src="https://github.com/Vanjinathan23.png" width="90px" style="border-radius: 50%;" alt="Vanji Nathan" />
-    </td>
-    <td>
-      <b>Vanji Nathan</b><br />
-      <i>Creative Developer & Designer</i><br />
-      <a href="https://github.com/Vanjinathan23">💻 GitHub</a> · 
-      <a href="https://linkedin.com">💼 LinkedIn</a> · 
-      <a href="https://portfolio.example.com">🎨 Portfolio</a>
-    </td>
-  </tr>
-</table>
+**The Solution:** A 5-question diagnostic that asks about feelings, not products. Questions like "What time of day do you feel most like yourself?" and "What do you want an object to do for you?" map to a scoring engine that matches the visitor to a specific piece — with a personalised description of why it was made for someone exactly like them.
+
+**User Flow:**
+1. Intro screen with 4 preview craft images — click "Discover Your Piece →"
+2. 5 questions, one at a time, with smooth transition animation
+3. "Calculating..." screen (2 seconds) with loading bar
+4. Result: matched piece + headline + archetype identity + enquiry CTA
+5. WhatsApp link pre-filled: *"My Craft DNA result was Pottery and I'd like to enquire about Morning Calm."*
+
+---
+
+### 📜 Feature 3 — The Piece's Journey
+**The Problem:** When someone buys a handmade piece, the story of its making disappears. The object exists. The memory of creating it does not travel with it. There is no record, no provenance, no connection between the maker and the keeper.
+
+**The Solution:** Every sold piece gets a permanent page at `/piece/:id` — accessible via a QR code printed and given with the piece. The page shows: date and time made, weather that morning, material origin, firing process, a mid-process photograph, and the artisan's personal handwritten note to the owner.
+
+**User Flow:**
+1. Owner scans QR code on the packaging
+2. Browser opens `/piece/AM-001`
+3. Standalone page loads — quiet, cinematic, letter-like
+4. Full provenance record + artisan note in italic Cormorant
+5. "← View Portfolio" link if they want to explore more
+
+## ⚡ Performance & Accessibility
+
+### Performance Decisions
+
+- **No animation library** — All animations are CSS keyframes or `requestAnimationFrame` — zero library overhead
+- **Lazy images** — All `<img>` tags below the fold use `loading="lazy"` with explicit `width` and `height`
+- **Font preconnect** — Google Fonts loaded with `preconnect` hints to eliminate render-blocking
+- **CSS custom properties** — Single source of truth for all design tokens — no repeated values, easy to maintain
+- **IntersectionObserver** — Used instead of scroll listeners for reveal animations — far better performance at scale
+- **clamp() everywhere** — Eliminates most breakpoint-specific overrides — fewer CSS rules, faster paint
+- **Static data** — No API calls on page load — everything renders immediately from JS data files
+
+### Accessibility Decisions
+
+- All images have descriptive `alt` text
+- All interactive elements have `aria-label` attributes
+- Keyboard navigation supported: `Escape` closes all modals
+- Custom cursor hidden on touch devices (`@media (hover: none)`) with `cursor: auto` restored
+- `body.locked` prevents scroll trap on open modals
+- Color contrast ratios meet WCAG AA for all text on their respective backgrounds
+- Decorative elements use `aria-hidden="true"`
+- Form inputs all have associated `<label>` elements
+
+## 🗺 Pages & Routes
+
+| Route | Component | Description |
+|-------|-----------|-------------|
+| `/` | `MainPortfolio` | Full portfolio — all sections in sequence |
+| `/piece/AM-001` | `PieceMemory` | Morning Calm provenance record |
+| `/piece/AM-002` | `PieceMemory` | Ember Ring provenance record |
+| `/piece/AM-003` | `PieceMemory` | Rainy Season provenance record |
+| `/piece/:id` | `PieceMemory` | Any piece by ID (graceful 404 if not found) |
+
+> All routes are client-side via React Router. For deployment, configure your host to redirect all routes to `index.html` (standard SPA setup).
+> 
+> **Vercel:** Works automatically.  
+> **Netlify:** Add a `_redirects` file: `/* /index.html 200`  
+> **GitHub Pages:** Add a `404.html` redirect.
+
+## 📐 Full Page Structure
+
+1. 🎬 **Preloader** — Letter stagger + counter + full-screen wipe
+2. 🧭 **Navbar** — Transparent → frosted glass on scroll
+3. 🖼 **Hero** — 3-panel: BW portrait · headline · craft image
+4. 📢 **Marquee** — Infinite craft category ticker (terracotta)
+5. 📖 **About** — Artisan story, timeline, 4-stat grid
+6. ⚙️ **Process** — Draggable 4-step craft carousel
+7. ⭐ **The Waiting Room** — Commission slots board + waitlist
+8. 🖼 **Gallery** — Bento grid + filters + fullscreen modal
+9. ✍️ **Stories** — 3 editorial piece stories, alternating layout
+10. ⭐ **Craft DNA Scanner** — 5-question personality → piece match
+11. 🌿 **Philosophy** — 3 craft pillars + closing quote
+12. ⭐ **The Piece's Journey** — Provenance cards + QR codes
+13. 💬 **Testimonials** — 5-card auto-slider
+14. 📬 **Contact** — Animated form + studio details
+15. 🏷 **Footer** — Brand wordmark + navigation + social
+
+*⭐ marks the three features unique to this portfolio*
+
+## 🌐 Deployment
+
+### Deploy to Vercel (Recommended — 2 minutes)
+
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Deploy from project root
+vercel
+
+# Follow prompts — defaults work for React projects
+# Your site will be live at https://artisana.vercel.app
+```
+
+### Deploy to Netlify
+
+```bash
+# Build the project
+npm run build
+
+# Drag and drop the /build folder to netlify.com/drop
+# OR connect your GitHub repository for auto-deploy
+```
+
+Important: add a `_redirects` file in `/public`:
+```
+/* /index.html 200
+```
+This ensures `/piece/:id` routes work correctly.
+
+### Deploy to GitHub Pages
+
+```bash
+# Install gh-pages
+npm install --save-dev gh-pages
+
+# Add to package.json scripts:
+# "predeploy": "npm run build",
+# "deploy": "gh-pages -d build"
+
+npm run deploy
+```
+
+Note: add a `homepage` field to `package.json`:
+```json
+"homepage": "https://yourusername.github.io/artisana"
+```
+
+## 🔧 Customizing for a Real Artisan
+
+> *This project is built to be handed to a real artisan or adapted for a real studio. Here's exactly what to change.*
+
+| What to change | Where to find it | What to update |
+|----------------|-----------------|----------------|
+| Artisan name / brand | `src/components/Navbar.jsx`, `Footer.jsx` | Replace "ARTISANA" |
+| Hero portrait image | `src/components/HeroPortrait.jsx` | Replace Unsplash URL with real photo |
+| Hero craft image | `src/components/HeroCraft.jsx` | Replace Unsplash URL |
+| About text & story | `src/components/About.jsx` | Edit paragraphs directly |
+| Timeline milestones | `src/data/galleryItems.js` | Edit year/title/desc array |
+| Gallery pieces | `src/data/galleryItems.js` | Replace images + metadata |
+| Commission slots | `src/data/waitingRoomData.js` | Update taken/available counts |
+| Craft DNA results | `src/data/craftDNAData.js` | Replace piece names + images |
+| Sold piece records | `src/data/pieceJourneyData.js` | Add real provenance data |
+| WhatsApp number | All `wa.me/` links | Replace `919999999999` |
+| Contact details | `src/components/Contact.jsx` | Update email, phone, city |
+| Color accent | `src/styles/main.css` | Change `--terra` and `--sand` |
+| Social links | `Footer.jsx`, `Contact.jsx` | Add real profile URLs |
+
+## 🔭 Future Scope
+
+### What could be added next
+
+- [ ] **Backend integration** — Replace mock commission data with a real CMS (Sanity, Contentful) so slot counts update in real time
+- [ ] **Real QR code generation** — Use `qrcode.react` library to generate functional QR codes for each piece
+- [ ] **Email notifications** — Connect waitlist form to Resend or EmailJS for instant artisan notification
+- [ ] **Admin panel** — Simple password-protected page to update commission slot availability
+- [ ] **Piece registry expansion** — Add more sold pieces to the provenance database over time
+- [ ] **Ambient sound toggle** — Optional background pottery wheel / studio sound
+- [ ] **Dark/light mode** — Toggle between walnut-dominant and cream-dominant color scheme
+
+## 🏆 Hackathon Context
+
+This project was built as a hackathon submission under the theme of **premium artisan digital presence**. The brief was to create a portfolio website that does what no artisan portfolio currently does — communicate process, identity, and philosophy with the same level of care that goes into the physical craft itself.
+
+Three features were conceived specifically for this context: The Waiting Room, The Craft DNA Scanner, and The Piece's Journey. None of these features exist on any artisan portfolio website today. Each one was designed to solve a real conversion or connection problem that artisans face when selling their work online.
+
+> *"The goal was not to build a website about craft. The goal was to build a website that is itself an act of craft."*
+
+## 📄 License
+
+MIT License — Free to use, modify, and distribute. See [LICENSE](file:///e:/Vanji/artisana-—-handcrafted-with-soul/LICENSE) file for details.
+
+## 🙏 Credits & Attributions
+
+- **Photography** — [Unsplash](https://unsplash.com) (free, no attribution required but credited here)
+- **Typography** — [Google Fonts](https://fonts.google.com) — Cormorant Garamond, Jost, Instrument Serif
+- **Badges** — [Shields.io](https://shields.io)
+- **Icons** — CSS symbols and Unicode characters (no library)
+- **Design Inspiration** — High-end editorial design, craft studio aesthetics, luxury brand digital presence
 
 ---
 
 <div align="center">
-  
-  *Crafted with intention. Designed with soul.*  
-  **© 2026 Artisana. Open Source under the Apache-2.0 License.**
+
+<br/>
+
+**ARTISANA**
+
+*Handcrafted with intention. Built with the same care.*
+
+<br/>
+
+Made with ♥ · Chennai, India · 2024
+
+<br/>
+
+[⬆ Back to top](#artisana)
 
 </div>
