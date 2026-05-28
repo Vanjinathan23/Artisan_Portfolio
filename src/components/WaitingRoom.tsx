@@ -2,35 +2,47 @@ import { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { queue, slots } from '../data/waitingRoomData';
 
+interface Reservation {
+  slotId: number;
+  name: string;
+  email: string;
+  craftType: string;
+  vision: string;
+  timeline: string;
+  ref: string;
+}
+
+type ModalView = 'form' | 'sending' | 'success' | 'cancel-confirm' | 'cancelled';
+
 interface FormState {
   name: string;
   email: string;
   craftType: string;
   vision: string;
   timeline: string;
-  open: boolean;
-  submitted: boolean;
-  sending: boolean;
 }
 
+const EMPTY_FORM: FormState = {
+  name: '', email: '', craftType: '', vision: '', timeline: '',
+};
+
 export const WaitingRoom = () => {
-  const [formState, setFormState] = useState<FormState>({
-    name: '', email: '', craftType: '', vision: '', timeline: '',
-    open: false, submitted: false, sending: false,
-  });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalView, setModalView] = useState<ModalView>('form');
   const [activeSlotId, setActiveSlotId] = useState<number | null>(null);
+  const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+
   const sectionRef = useRef<HTMLElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Scroll reveal for cards and timeline
+  // Scroll reveal
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('wr-visible');
-          }
+          if (entry.isIntersecting) entry.target.classList.add('wr-visible');
         });
       },
       { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
@@ -40,46 +52,71 @@ export const WaitingRoom = () => {
     return () => observer.disconnect();
   }, []);
 
-  // ESC key to close modal
+  // ESC key closes modal
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && formState.open) closeModal();
+      if (e.key === 'Escape' && modalOpen) handleClose();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [formState.open]);
+  }, [modalOpen]);
 
   // Lock scroll when modal open
   useEffect(() => {
-    document.body.classList.toggle('locked', formState.open);
+    document.body.classList.toggle('locked', modalOpen);
     return () => { document.body.classList.remove('locked'); };
-  }, [formState.open]);
+  }, [modalOpen]);
 
-  const openModal = (slotId: number) => {
+  const getReservation = (slotId: number) =>
+    reservations.find((r) => r.slotId === slotId) ?? null;
+
+  const openReserveModal = (slotId: number) => {
     setActiveSlotId(slotId);
-    setFormState(f => ({ ...f, open: true, submitted: false }));
+    setForm(EMPTY_FORM);
+    setModalView('form');
+    setModalOpen(true);
   };
 
-  const closeModal = () => {
-    setFormState(f => ({
-      ...f, open: false, submitted: false, sending: false,
-      name: '', email: '', craftType: '', vision: '', timeline: '',
-    }));
+  const openCancelModal = (slotId: number) => {
+    setActiveSlotId(slotId);
+    setModalView('cancel-confirm');
+    setModalOpen(true);
+  };
+
+  const handleClose = () => {
+    setModalOpen(false);
+    setModalView('form');
     setActiveSlotId(null);
+    setForm(EMPTY_FORM);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setFormState(f => ({ ...f, sending: true }));
+    setModalView('sending');
     setTimeout(() => {
-      setFormState(f => ({ ...f, sending: false, submitted: true }));
+      const newReservation: Reservation = {
+        slotId: activeSlotId!,
+        ...form,
+        ref: `SLOT-00${activeSlotId}`,
+      };
+      setReservations((prev) => [...prev, newReservation]);
+      setModalView('success');
     }, 1400);
   };
+
+  const handleCancelConfirm = () => {
+    setReservations((prev) => prev.filter((r) => r.slotId !== activeSlotId));
+    setModalView('cancelled');
+  };
+
+  const isReserved = (slotId: number) => !!getReservation(slotId);
+
+  const totalReserved = reservations.length;
+  const availableNow = slots.available - totalReserved;
 
   return (
     <>
       <section id="waiting-room" className="wr-section" ref={sectionRef}>
-        {/* Ghost background text */}
         <div className="wr-ghost-text" aria-hidden="true">QUEUE</div>
 
         <div className="wrap relative z-10">
@@ -97,28 +134,27 @@ export const WaitingRoom = () => {
             <div className="wr-live-status">
               <span className="wr-live-dot" />
               <span className="wr-live-text">
-                {slots.available} slot{slots.available !== 1 ? 's' : ''} open for {slots.currentMonth}
+                {availableNow > 0
+                  ? `${availableNow} slot${availableNow !== 1 ? 's' : ''} open for ${slots.currentMonth}`
+                  : `All slots filled for ${slots.currentMonth}`}
               </span>
             </div>
           </div>
 
           {/* Slots Grid */}
           <div className="wr-slots-grid">
-            {queue.map((slot, i) => (
-              <div
-                key={slot.id}
-                ref={(el) => { cardRefs.current[i] = el; }}
-                className={`wr-card-reveal slot-card ${slot.status === 'available' ? 'slot-available' : 'slot-taken'}`}
-                style={{ transitionDelay: `${i * 0.08}s` }}
-                onClick={() => slot.status === 'available' ? openModal(slot.id) : undefined}
-                role={slot.status === 'available' ? 'button' : undefined}
-                tabIndex={slot.status === 'available' ? 0 : undefined}
-                onKeyDown={(e) => {
-                  if (slot.status === 'available' && (e.key === 'Enter' || e.key === ' ')) openModal(slot.id);
-                }}
-              >
-                {slot.status === 'in-progress' ? (
-                  <>
+            {queue.map((slot, i) => {
+              const reservation = getReservation(slot.id);
+              const reserved = !!reservation;
+
+              if (slot.status === 'in-progress') {
+                return (
+                  <div
+                    key={slot.id}
+                    ref={(el) => { cardRefs.current[i] = el; }}
+                    className="wr-card-reveal slot-card slot-taken"
+                    style={{ transitionDelay: `${i * 0.08}s` }}
+                  >
                     <div className="slot-top">
                       <div className="slot-number">{String(slot.id).padStart(3, '0')}</div>
                       <div className="slot-badge">In Progress</div>
@@ -132,20 +168,61 @@ export const WaitingRoom = () => {
                           : `Started ${slot.startedWeeksAgo} week${slot.startedWeeksAgo !== 1 ? 's' : ''} ago`}
                       </span>
                     </div>
-                    {/* Hover reveal overlay */}
                     <div className="slot-hover-info">
                       <span className="slot-hover-piece">{slot.piece}</span>
                       <span className="slot-hover-city">{slot.city}</span>
                     </div>
-                  </>
-                ) : (
+                  </div>
+                );
+              }
+
+              // Available / Reserved slot
+              if (reserved) {
+                return (
+                  <div
+                    key={slot.id}
+                    ref={(el) => { cardRefs.current[i] = el; }}
+                    className="wr-card-reveal slot-card slot-reserved"
+                    style={{ transitionDelay: `${i * 0.08}s` }}
+                  >
+                    <div className="slot-top">
+                      <div className="slot-number">{String(slot.id).padStart(3, '0')}</div>
+                      <div className="slot-badge slot-badge-reserved">Reserved</div>
+                    </div>
+                    <div className="slot-reserved-name">{reservation!.name}</div>
+                    <div className="slot-reserved-ref">{reservation!.ref}</div>
+                    <button
+                      className="slot-cancel-btn"
+                      onClick={() => openCancelModal(slot.id)}
+                      aria-label={`Cancel reservation ${reservation!.ref}`}
+                    >
+                      Cancel Reservation
+                    </button>
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key={slot.id}
+                  ref={(el) => { cardRefs.current[i] = el; }}
+                  className="wr-card-reveal slot-card slot-available"
+                  style={{ transitionDelay: `${i * 0.08}s` }}
+                  onClick={() => openReserveModal(slot.id)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Reserve slot ${slot.id}`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') openReserveModal(slot.id);
+                  }}
+                >
                   <div className="slot-available-inner">
                     <span className="slot-plus">+</span>
                     <span className="slot-avail-label">Available</span>
                   </div>
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
 
           {/* Wait Timeline Bar */}
@@ -166,32 +243,21 @@ export const WaitingRoom = () => {
         </div>
       </section>
 
-      {/* Waitlist Modal */}
+      {/* ── Modal Overlay ── */}
       <div
-        className={`wr-modal-overlay${formState.open ? ' open' : ''}`}
-        onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
+        className={`wr-modal-overlay${modalOpen ? ' open' : ''}`}
+        onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
         aria-modal="true"
         role="dialog"
       >
         <div className="wr-modal">
-          <button className="wr-close" onClick={closeModal} aria-label="Close modal">
+          {/* Close button always present */}
+          <button className="wr-close" onClick={handleClose} aria-label="Close modal">
             <X size={18} />
           </button>
 
-          {formState.submitted ? (
-            <div className="wr-success">
-              <div className="wr-success-icon">✓</div>
-              <h3 className="wr-success-h3">Your slot is reserved.</h3>
-              <p className="wr-success-p">
-                I'll review your brief and confirm via email within 24 hours. Nothing is final until
-                we've spoken — this is just the beginning.
-              </p>
-              <p className="wr-success-ref">
-                Reference: SLOT-00{activeSlotId}
-              </p>
-              <button className="wr-close-btn" onClick={closeModal}>Close</button>
-            </div>
-          ) : (
+          {/* ── View: Form ── */}
+          {modalView === 'form' && (
             <>
               <div className="tag-label">Reserve Your Slot</div>
               <h2 className="wr-modal-h2">
@@ -201,19 +267,20 @@ export const WaitingRoom = () => {
                 Tell me what you're imagining. I'll confirm availability within 24 hours.
               </p>
 
-              <form className="wr-form" onSubmit={handleSubmit}>
+              <form className="wr-form" onSubmit={handleSubmit} noValidate>
                 {/* Name */}
                 <div className="wr-field">
                   <input
                     id="wr-name"
                     type="text"
-                    placeholder=" "
                     required
-                    value={formState.name}
-                    onChange={(e) => setFormState(f => ({ ...f, name: e.target.value }))}
-                    className="wr-input peer"
+                    value={form.name}
+                    onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                    className="wr-input"
+                    placeholder=" "
+                    autoComplete="name"
                   />
-                  <label htmlFor="wr-name" className="wr-label">Your Name</label>
+                  <label htmlFor="wr-name">Your Name</label>
                 </div>
 
                 {/* Email */}
@@ -221,20 +288,22 @@ export const WaitingRoom = () => {
                   <input
                     id="wr-email"
                     type="email"
-                    placeholder=" "
                     required
-                    value={formState.email}
-                    onChange={(e) => setFormState(f => ({ ...f, email: e.target.value }))}
-                    className="wr-input peer"
+                    value={form.email}
+                    onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                    className="wr-input"
+                    placeholder=" "
+                    autoComplete="email"
                   />
-                  <label htmlFor="wr-email" className="wr-label">Email Address</label>
+                  <label htmlFor="wr-email">Email Address</label>
                 </div>
 
                 {/* Craft Type */}
                 <div className="wr-field">
                   <select
-                    value={formState.craftType}
-                    onChange={(e) => setFormState(f => ({ ...f, craftType: e.target.value }))}
+                    id="wr-craft"
+                    value={form.craftType}
+                    onChange={(e) => setForm((f) => ({ ...f, craftType: e.target.value }))}
                     className="wr-select"
                     required
                   >
@@ -251,20 +320,22 @@ export const WaitingRoom = () => {
                 <div className="wr-field">
                   <textarea
                     id="wr-vision"
-                    placeholder=" "
                     required
-                    value={formState.vision}
-                    onChange={(e) => setFormState(f => ({ ...f, vision: e.target.value }))}
-                    className="wr-textarea peer"
+                    value={form.vision}
+                    onChange={(e) => setForm((f) => ({ ...f, vision: e.target.value }))}
+                    className="wr-textarea"
+                    placeholder=" "
+                    rows={4}
                   />
-                  <label htmlFor="wr-vision" className="wr-label">Describe your vision...</label>
+                  <label htmlFor="wr-vision">Describe your vision...</label>
                 </div>
 
                 {/* Timeline */}
                 <div className="wr-field">
                   <select
-                    value={formState.timeline}
-                    onChange={(e) => setFormState(f => ({ ...f, timeline: e.target.value }))}
+                    id="wr-timeline"
+                    value={form.timeline}
+                    onChange={(e) => setForm((f) => ({ ...f, timeline: e.target.value }))}
                     className="wr-select"
                   >
                     <option value="">When do you need this...</option>
@@ -275,11 +346,84 @@ export const WaitingRoom = () => {
                   </select>
                 </div>
 
-                <button type="submit" className="wr-submit" disabled={formState.sending}>
-                  {formState.sending ? 'Sending...' : 'Reserve This Slot'}
+                <button type="submit" className="wr-submit">
+                  Reserve This Slot
                 </button>
               </form>
             </>
+          )}
+
+          {/* ── View: Sending ── */}
+          {modalView === 'sending' && (
+            <div className="wr-success">
+              <div className="wr-sending-anim">
+                <div className="wr-sending-bar" />
+              </div>
+              <p className="wr-calc-word">Securing your slot...</p>
+            </div>
+          )}
+
+          {/* ── View: Success ── */}
+          {modalView === 'success' && (
+            <div className="wr-success">
+              <div className="wr-success-icon">✓</div>
+              <h3 className="wr-success-h3">Your slot is reserved.</h3>
+              <p className="wr-success-p">
+                I'll review your brief and confirm via email within 24 hours. Nothing is final until
+                we've spoken — this is just the beginning.
+              </p>
+              <p className="wr-success-ref">Reference: SLOT-00{activeSlotId}</p>
+              <div className="wr-success-actions">
+                <button className="wr-close-btn" onClick={handleClose}>
+                  Close
+                </button>
+                <button
+                  className="wr-cancel-link"
+                  onClick={() => setModalView('cancel-confirm')}
+                >
+                  Cancel this reservation
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ── View: Cancel Confirm ── */}
+          {modalView === 'cancel-confirm' && (
+            <div className="wr-success">
+              <div className="wr-cancel-icon">✕</div>
+              <h3 className="wr-success-h3">Cancel your reservation?</h3>
+              <p className="wr-success-p">
+                This will release your slot back into the queue. You're welcome to reserve again
+                any time — but the slot may be taken.
+              </p>
+              {activeSlotId && (
+                <p className="wr-success-ref">
+                  Cancelling: SLOT-00{activeSlotId}
+                </p>
+              )}
+              <div className="wr-cancel-actions">
+                <button className="wr-submit wr-submit-danger" onClick={handleCancelConfirm}>
+                  Yes, cancel my reservation
+                </button>
+                <button className="wr-close-btn" onClick={handleClose}>
+                  Keep my slot
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ── View: Cancelled ── */}
+          {modalView === 'cancelled' && (
+            <div className="wr-success">
+              <div className="wr-cancel-icon">○</div>
+              <h3 className="wr-success-h3">Reservation released.</h3>
+              <p className="wr-success-p">
+                Your slot has been returned to the queue. Whenever you're ready, it's here.
+              </p>
+              <button className="wr-close-btn" onClick={handleClose}>
+                Close
+              </button>
+            </div>
           )}
         </div>
       </div>

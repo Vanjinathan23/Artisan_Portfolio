@@ -8,10 +8,7 @@ export const HeroCraft = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-r from-walnut/55 via-walnut/10 to-transparent" />
       <div className="absolute top-[clamp(90px,14vh,130px)] left-5 font-head text-[0.65rem] tracking-[0.3em] uppercase text-ondark/50 [writing-mode:vertical-rl]">Since 2018</div>
-      <div className="absolute top-[clamp(90px,14vh,130px)] right-10 w-[90px] h-[90px] rounded-full bg-terra flex flex-col items-center justify-center animate-[spin_20s_linear_infinite]">
-        <span className="font-head text-[1.5rem] font-light text-white leading-none">6+</span>
-        <small className="font-body text-[0.45rem] tracking-[0.15em] uppercase text-white/70">Years</small>
-      </div>
+
       <div className="absolute bottom-[clamp(28px,5vw,52px)] right-10 bg-cream/92 backdrop-blur-md p-[18px_22px] max-w-[200px] border-l-2 border-terra">
         <div className="font-body text-[0.55rem] font-medium tracking-[0.22em] uppercase text-muted mb-1">Currently available</div>
         <div className="font-head text-[1.15rem] text-espresso leading-tight">Commission a Piece</div>
