@@ -2,8 +2,8 @@ export const HeroCraft = () => {
   return (
     <div className="hidden md:block relative overflow-hidden bg-parch hero-r">
       <img 
-        src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=1200&auto=format&fit=crop&q=85" 
-        alt="Artisan hands"
+        src="/src/assets/images/artisan_man_pose.png" 
+        alt="Artisan man posing in ceramic workshop"
         className="absolute inset-0 w-full h-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-walnut/55 via-walnut/10 to-transparent" />

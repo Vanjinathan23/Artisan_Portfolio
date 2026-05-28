@@ -1,5 +1,4 @@
 import { motion } from 'motion/react';
-import HeroPortrait from './HeroPortrait';
 import HeroText from './HeroText';
 import HeroCraft from './HeroCraft';
 
@@ -13,7 +12,6 @@ export const Hero = ({ preloaderDone }: HeroProps) => {
       id="hero" 
       className="w-full h-screen min-h-[640px] grid relative overflow-hidden bg-cream"
     >
-      <HeroPortrait preloaderDone={preloaderDone} />
       <HeroText />
       <HeroCraft />
 
