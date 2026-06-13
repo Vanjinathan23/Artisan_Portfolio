@@ -95,6 +95,19 @@ Every design decision in this project was made with one question in mind: does t
 - **Guided Tours (CoC-style).** Ask "explain one of your best pieces" and the Apprentice dims the page, spotlights the exact gallery item with a glowing cutout, walks over, and explains it — then moves to the next relevant section automatically.
 - **Teaches, doesn't just answer.** Ask "how do I commission a piece" and the Apprentice spotlights the Waiting Room, points at an open slot, then walks you to the contact form — narrating each step like an in-person studio visit.
 
+**Animation Engineering (Duolingo-Craft Polish):**
+- **Composable Pose Library:** Data-attribute driven CSS architecture (`data-pose="walking"`) completely decouples animation logic from complex React states.
+- **Idle Variations:** The character doesn't just loop one animation. It periodically cycles through subtle life-like idles (stretching, adjusting its head, settling).
+- **Proximity Eye Tracking:** Sub-pixel calculations enable the Apprentice's eyes (complete with catch-light highlights) to track the user's cursor when within a 150px radius.
+- **Micro-Reactions:** Contextual awareness triggers emotional states without user prompts. E.g., lingering on a gallery item triggers a *Curious* lean; completing the Craft DNA triggers *Quiet Pride*; entering the Unseen Hours journal triggers a *Hushed* state.
+- **Anticipation & Follow-through:** Movement uses classic animation principles, winding up before acting (squash/anticipation) and overshooting slightly upon arrival.
+
+**Character Design:**
+A small hand-thrown clay figurine — head, torso, arms with rounded hands, legs with flat feet, all built in pure CSS with no image assets. Subtle asymmetric shapes mirror the "no two pieces alike" philosophy of the studio itself. Faint pottery-wheel throwing lines texture the torso. A hidden smile (SVG line-draw animation) appears only when the Apprentice speaks or greets — restrained, not cartoonish.
+
+**Interaction fix:**
+The chat/voice panel opens on click (not hover) and stays open via persistent state — solving the "panel disappears while moving to type" issue entirely. Closes on outside click, ESC, re-click, or when a guided tour begins.
+
 *Tech: Web Speech API (SpeechRecognition + SpeechSynthesis, zero packages), Gemini API returns structured JSON tour scripts for navigational queries, SVG masking for the spotlight dimming effect, character built entirely in CSS (no image assets).*
 
 ## 🎨 Design System

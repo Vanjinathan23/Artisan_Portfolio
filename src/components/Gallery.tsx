@@ -71,6 +71,7 @@ export const Gallery = ({ onSelectItem }: GalleryProps) => {
                 key={item.id}
                 onClick={() => onSelectItem(item)}
                 data-idx={idx !== undefined ? idx : undefined}
+                data-title={item.title}
                 className={`gi relative group overflow-hidden cursor-none ${item.className} 
                 ${item.className === 'g-big' ? 'col-span-12 md:col-span-12 lg:col-span-5 row-span-1 lg:row-span-2 min-h-[280px] md:min-h-[380px] lg:min-h-[440px]' : ''}
                 ${item.className === 'g-med' ? 'col-span-12 sm:col-span-6 lg:col-span-4 min-h-[240px] md:min-h-[210px]' : ''}

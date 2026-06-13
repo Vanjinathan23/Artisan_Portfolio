@@ -88,7 +88,7 @@ export function speak(text, { onStart, onEnd, rate = 0.95, pitch = 1.05 } = {}) 
   }
   utterance.rate = rate;
   utterance.pitch = pitch;
-  utterance.volume = 1;
+  utterance.volume = 0.75; // Lowered from 1 for a more pleasant listening experience
 
   utterance.onstart = () => onStart?.();
   utterance.onend = () => onEnd?.();

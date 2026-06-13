@@ -42,6 +42,7 @@ export const CraftDNA = () => {
   useEffect(() => {
     if (quizPhase === 'result') {
       setTimeout(() => setResultVisible(true), 80);
+      window.dispatchEvent(new CustomEvent('artisana:dna-complete'));
     } else {
       setResultVisible(false);
     }

@@ -32,6 +32,7 @@ import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { GalleryModal } from './components/GalleryModal';
 import { PieceMemory } from './components/PieceMemory';
+import { UnseenHours } from './components/UnseenHours';
 
 // The Apprentice visual companion components
 import { Apprentice } from './components/Apprentice';
@@ -285,7 +286,7 @@ function MainPortfolio() {
       </main>
 
       <Footer />
-      <Apprentice {...apprentice} onQuery={handleApprenticeQuery} />
+      <Apprentice {...apprentice} onQuery={handleApprenticeQuery} tourActive={tourActive} />
       <SpotlightOverlay cutout={cutout} tourActive={tourActive} />
 
       <GalleryModal 
@@ -303,6 +304,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<MainPortfolio />} />
         <Route path="/piece/:id" element={<PieceMemory />} />
+        <Route path="/journal" element={<UnseenHours />} />
       </Routes>
     </BrowserRouter>
   );

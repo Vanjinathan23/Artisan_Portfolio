@@ -8,6 +8,7 @@ interface VoiceOrbProps {
   setVoiceOutput: (val: boolean) => void;
   liveTranscript: string;
   onSend: (text: string) => void;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
 }
 
 export const VoiceOrb = ({
@@ -16,7 +17,8 @@ export const VoiceOrb = ({
   voiceOutputEnabled,
   setVoiceOutput,
   liveTranscript,
-  onSend
+  onSend,
+  inputRef
 }: VoiceOrbProps) => {
   const handleSend = () => {
     if (textInput.trim()) {
@@ -35,6 +37,7 @@ export const VoiceOrb = ({
       
       <div className="vop-input-row">
         <input
+          ref={inputRef}
           type="text"
           placeholder="Ask me anything about the studio..."
           value={textInput}
@@ -64,3 +67,4 @@ export const VoiceOrb = ({
 };
 
 export default VoiceOrb;
+
