@@ -87,6 +87,16 @@ Every design decision in this project was made with one question in mind: does t
 - Lives at `/piece/:id` — a standalone route separate from the portfolio, designed to feel like opening a handwritten letter
 - The physical object and its digital soul are permanently linked. A purchase becomes a living heirloom.
 
+#### 4. 🏺 The Apprentice — A Living Craft Companion
+> *Not a chatbot. A small clay figure that came alive — who walks you through the studio like an actual visit.*
+
+- **A character, not a window.** The Apprentice idles, breathes, waves, thinks, and walks across the screen.
+- **Press-and-hold to talk.** No mic button — hold the Apprentice itself like a walkie-talkie. Release to send. It speaks back in a warm voice while showing captions.
+- **Guided Tours (CoC-style).** Ask "explain one of your best pieces" and the Apprentice dims the page, spotlights the exact gallery item with a glowing cutout, walks over, and explains it — then moves to the next relevant section automatically.
+- **Teaches, doesn't just answer.** Ask "how do I commission a piece" and the Apprentice spotlights the Waiting Room, points at an open slot, then walks you to the contact form — narrating each step like an in-person studio visit.
+
+*Tech: Web Speech API (SpeechRecognition + SpeechSynthesis, zero packages), Gemini API returns structured JSON tour scripts for navigational queries, SVG masking for the spotlight dimming effect, character built entirely in CSS (no image assets).*
+
 ## 🎨 Design System
 
 ### Color Palette

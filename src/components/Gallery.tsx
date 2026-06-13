@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
     import { motion } from 'motion/react';
     import { galleryItems, GalleryItem } from '../data/galleryItems';
 
@@ -8,6 +8,16 @@ interface GalleryProps {
 
 export const Gallery = ({ onSelectItem }: GalleryProps) => {
   const [activeFilter, setActiveFilter] = useState('all');
+
+  useEffect(() => {
+    const handleReset = () => {
+      setActiveFilter('all');
+    };
+    window.addEventListener('artisana:reset-gallery-filter', handleReset);
+    return () => {
+      window.removeEventListener('artisana:reset-gallery-filter', handleReset);
+    };
+  }, []);
 
   const filteredItems = useMemo(() => {
     return activeFilter === 'all'
@@ -41,14 +51,27 @@ export const Gallery = ({ onSelectItem }: GalleryProps) => {
         </div>
 
         <div className="grid grid-cols-12 gap-2 sm:gap-[4px]">
-          {filteredItems.map((item) => (
-            <motion.div
-              layout
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              key={item.id}
-              onClick={() => onSelectItem(item)}
-              className={`gi relative group overflow-hidden cursor-none ${item.className} 
+          {filteredItems.map((item) => {
+            const titleToIdx: Record<string, number> = {
+              'Morning Calm': 0,
+              'Ember Ring': 1,
+              'Rainy Season': 2,
+              'Woven Dusk': 3,
+              'Earth Vessel': 4,
+              'Silver Drift': 5,
+              'Ochre Mind': 6,
+              'Midnight Cup': 7
+            };
+            const idx = titleToIdx[item.title];
+            return (
+              <motion.div
+                layout
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                key={item.id}
+                onClick={() => onSelectItem(item)}
+                data-idx={idx !== undefined ? idx : undefined}
+                className={`gi relative group overflow-hidden cursor-none ${item.className} 
                 ${item.className === 'g-big' ? 'col-span-12 md:col-span-12 lg:col-span-5 row-span-1 lg:row-span-2 min-h-[280px] md:min-h-[380px] lg:min-h-[440px]' : ''}
                 ${item.className === 'g-med' ? 'col-span-12 sm:col-span-6 lg:col-span-4 min-h-[240px] md:min-h-[210px]' : ''}
                 ${item.className === 'g-tall' ? 'col-span-12 sm:col-span-6 lg:col-span-3 row-span-1 lg:row-span-2 min-h-[300px] md:min-h-[440px]' : ''}
@@ -68,7 +91,8 @@ export const Gallery = ({ onSelectItem }: GalleryProps) => {
                 </div>
               </div>
             </motion.div>
-          ))}
+          );
+          })}
         </div>
       </div>
     </section>

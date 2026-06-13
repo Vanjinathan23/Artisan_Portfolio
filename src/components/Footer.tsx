@@ -42,6 +42,7 @@ export const Footer = () => {
         <div className="border-t border-white/[0.07] pt-6.5 flex flex-col sm:flex-row justify-between items-center gap-2.5 text-center sm:text-left">
           <p className="font-body text-[0.63rem] tracking-[0.1em] text-white/20">© 2024 Artisana Studio. All rights reserved.</p>
           <a href="#" className="font-body text-[0.63rem] tracking-[0.1em] text-white/20 hover:text-sand transition-colors cursor-none">Privacy Policy</a>
+          <a href="/journal" className="font-body text-[0.63rem] tracking-[0.1em] text-white/[0.04] hover:text-sand/30 transition-colors duration-500 cursor-none">for those who stay until the end</a>
           <p className="font-body text-[0.63rem] tracking-[0.1em] text-white/20">Crafted with Soul · Chennai, India</p>
         </div>
       </div>

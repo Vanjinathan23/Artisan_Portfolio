@@ -40,7 +40,7 @@ export const Testimonials = () => {
 
   return (
     <section 
-      id="testi" 
+      id="testimonials" 
       className="sec bg-cream"
       onMouseEnter={() => { isHoveredRef.current = true; }}
       onMouseLeave={() => { isHoveredRef.current = false; }}

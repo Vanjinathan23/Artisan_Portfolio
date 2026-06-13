@@ -54,10 +54,24 @@ export const Contact = () => {
                 <a key={soc} href="#" className="w-10 h-10 border border-white/10 flex items-center justify-center font-body text-[0.6rem] font-medium tracking-[0.1em] text-white/38 hover:border-sand hover:text-sand hover:bg-sand/[0.08] transition-all uppercase">{soc}</a>
               ))}
             </div>
+
+            <div className="mt-10 border-t border-white/10 pt-8 max-w-[380px]">
+              <span className="block font-body text-[0.58rem] font-medium tracking-[0.2em] uppercase text-muted mb-2">Immediate Answer?</span>
+              <p className="font-body text-[0.82rem] font-light text-white/48 leading-relaxed mb-4">
+                Chat with our AI Studio Assistant for instant answers regarding pieces, commissions, care instructions, and more.
+              </p>
+              <button 
+                type="button"
+                onClick={() => window.openApprentice?.()}
+                className="inline-block bg-white/[0.05] border border-white/10 hover:border-sand hover:text-sand text-white px-6 py-3 font-body text-[0.62rem] font-medium tracking-[0.18em] uppercase transition-all cursor-none outline-none"
+              >
+                Open Studio Assistant
+              </button>
+            </div>
           </div>
 
           <div>
-            <form onSubmit={handleFormSubmit} className="bg-white/[0.03] border border-white/[0.08] p-7 sm:p-12 relative">
+            <form onSubmit={handleFormSubmit} className="c-form contact-form bg-white/[0.03] border border-white/[0.08] p-7 sm:p-12 relative">
               {formSubmitted ? (
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}

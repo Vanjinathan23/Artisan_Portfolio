@@ -68,14 +68,15 @@ export const GalleryModal = ({ modalData, onClose }: GalleryModalProps) => {
               <p className="font-body text-[0.87rem] font-light text-umber leading-[1.85] mb-8">
                 {modalData.desc}
               </p>
-              <a 
-                href={`https://wa.me/919999999999?text=Hello%2C+I+am+interested+in+${encodeURIComponent(modalData.title)}`} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-block bg-terra text-white px-8 py-3.5 font-body text-[0.68rem] font-medium tracking-[0.2em] uppercase text-center"
+              <button 
+                onClick={() => {
+                  window.openApprentice?.(`Hello, I am interested in the ${modalData.title} piece.`);
+                  onClose();
+                }}
+                className="inline-block bg-terra text-white px-8 py-3.5 font-body text-[0.68rem] font-medium tracking-[0.2em] uppercase text-center cursor-none w-full border-none outline-none"
               >
                 Enquire About This Piece
-              </a>
+              </button>
             </div>
           </motion.div>
         </motion.div>

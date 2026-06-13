@@ -153,6 +153,7 @@ export const WaitingRoom = () => {
                     key={slot.id}
                     ref={(el) => { cardRefs.current[i] = el; }}
                     className="wr-card-reveal slot-card slot-taken"
+                    data-slot={slot.id}
                     style={{ transitionDelay: `${i * 0.08}s` }}
                   >
                     <div className="slot-top">
@@ -183,6 +184,7 @@ export const WaitingRoom = () => {
                     key={slot.id}
                     ref={(el) => { cardRefs.current[i] = el; }}
                     className="wr-card-reveal slot-card slot-reserved"
+                    data-slot={slot.id}
                     style={{ transitionDelay: `${i * 0.08}s` }}
                   >
                     <div className="slot-top">
@@ -207,6 +209,7 @@ export const WaitingRoom = () => {
                   key={slot.id}
                   ref={(el) => { cardRefs.current[i] = el; }}
                   className="wr-card-reveal slot-card slot-available"
+                  data-slot={slot.id}
                   style={{ transitionDelay: `${i * 0.08}s` }}
                   onClick={() => openReserveModal(slot.id)}
                   role="button"

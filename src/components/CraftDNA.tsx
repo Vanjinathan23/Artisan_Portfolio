@@ -104,7 +104,7 @@ export const CraftDNA = () => {
                 At the end, I'll show you the piece that was made for someone exactly like you.
               </p>
               <p className="dna-intro-note">This is not a quiz about products. It is a quiet mirror. Answer slowly.</p>
-              <button className="dna-start-btn" onClick={() => setQuizPhase('question')}>Discover Your Piece →</button>
+              <button className="dna-start-btn btn-fill" onClick={() => setQuizPhase('question')}>Discover Your Piece →</button>
             </div>
             <div className="dna-preview-grid rv-xr">
               {CRAFT_PREVIEW_IMAGES.map((img) => (
@@ -183,14 +183,14 @@ export const CraftDNA = () => {
                 <p className="dna-archetype-desc">{result.archetypeDesc}</p>
               </div>
               <div className="dna-result-ctas">
-                <a
-                  href={`https://wa.me/919999999999?text=${encodeURIComponent(`Hello, my Craft DNA result was ${result.craftType} and I'd like to enquire about ${result.piece}.`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="dna-cta-primary"
+                <button
+                  onClick={() => {
+                    window.openApprentice?.(`Hello, my Craft DNA result was ${result.craftType} and I'd like to enquire about ${result.piece}.`);
+                  }}
+                  className="dna-cta-primary cursor-none border-none outline-none"
                 >
                   Enquire About This Piece
-                </a>
+                </button>
                 <button className="dna-cta-ghost" onClick={resetQuiz}>Take the quiz again →</button>
               </div>
             </div>
