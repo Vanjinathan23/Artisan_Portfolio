@@ -9,14 +9,46 @@ export const Contact = () => {
   const [email, setEmail] = useState('');
   const [interest, setInterest] = useState('');
   const [message, setMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSending(true);
-    setTimeout(() => {
+    setErrorMessage('');
+    
+    // Basic validation
+    if (!name || !email || !interest || !message) {
+      setErrorMessage('Please fill out all fields.');
       setIsSending(false);
-      setFormSubmitted(true);
-    }, 1300);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          subject: interest,
+          message,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setFormSubmitted(true);
+      } else {
+        setErrorMessage(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch (error) {
+      setErrorMessage('Network error. Please try again later.');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -78,10 +110,19 @@ export const Contact = () => {
                   animate={{ opacity: 1, y: 0 }}
                   className="font-accent italic text-[1.15rem] text-sand text-center p-5.5 border border-sand/20"
                 >
-                  Your message has been received. I'll respond within 24 hours.
+                  Thank you for contacting us. We will get back to you soon.
                 </motion.div>
               ) : (
                 <>
+                  {errorMessage && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mb-4 text-[#ff6b6b] text-sm text-center font-body border border-[#ff6b6b]/20 p-3 bg-[#ff6b6b]/10"
+                    >
+                      {errorMessage}
+                    </motion.div>
+                  )}
                   <div className="relative mb-[3px]">
                     <input 
                       type="text" 

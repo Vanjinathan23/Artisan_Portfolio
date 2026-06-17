@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { soldPieces } from '../data/pieceJourneyData';
+import { ApprenticeHelpButton } from './ApprenticeHelpButton';
 
 // QR-like SVG per piece (purely decorative finder-pattern style)
 const QR_PATTERNS: Record<string, string> = {
@@ -113,6 +114,11 @@ export const PieceJourney = () => {
               Scan any of the codes below to see an example of what every owner receives. This is not
               a receipt. It is a provenance record — a digital soul for every physical piece.
             </p>
+            <ApprenticeHelpButton
+              label="Show Me How This Works"
+              guideKey="piece-journey-explainer"
+              onHelpRequest={(key: string) => (window as any).openApprenticeGuide?.(key)}
+            />
           </div>
         </div>
 

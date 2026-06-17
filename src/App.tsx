@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Lenis from 'lenis';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -34,10 +34,12 @@ import { GalleryModal } from './components/GalleryModal';
 import { PieceMemory } from './components/PieceMemory';
 import { UnseenHours } from './components/UnseenHours';
 
-// The Apprentice visual companion components
-import { Apprentice } from './components/Apprentice';
+import Apprentice from './components/Apprentice';
 import { SpotlightOverlay } from './components/SpotlightOverlay';
-import { useApprenticeState } from './hooks/useApprenticeState.js';
+import { PointerArrow } from './components/PointerArrow';
+import { useApprenticeState } from './hooks/useApprenticeState';
+import { useFirstVisitWelcome } from './hooks/useFirstVisitWelcome.js';
+import { useTourGuides } from './hooks/useTourGuides';
 import { parseAIResponse, runTour } from './utils/tourEngine.js';
 import { speak, isVoiceOutputEnabled } from './utils/voiceEngine.js';
 import { retrieveWithBoost } from './utils/ragEngine.js';
@@ -50,11 +52,56 @@ function MainPortfolio() {
   const apprentice = useApprenticeState();
   const [cutout, setCutout] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
   const [tourActive, setTourActive] = useState(false);
-  const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
+  const [messages, setMessages] = useState<Array<{ id?: string; role: string; content: string; typing?: boolean }>>([]);
   const [loading, setLoading] = useState(false);
 
+  const [currentStep, setCurrentStep] = useState<any>(null);
+  const [hasPointerArrow, setHasPointerArrow] = useState(false);
+
+  const sendInFlightRef = useRef(false);
+  const messagesRef = useRef<Array<{ id?: string; role: string; content: string; typing?: boolean }>>([]);
+
+  // Keep messagesRef ALWAYS in sync with the latest messages
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
+  const {
+    showReturnPill,
+    setShowReturnPill,
+    returnAnchor,
+    setReturnAnchor,
+    stepIndex,
+    startOverviewTour,
+    goToNextStep,
+    goToPreviousStep,
+    endOverviewTour,
+    openApprenticeGuide,
+    endTourEarly
+  } = useTourGuides({
+    apprentice,
+    setCutout,
+    setTourActive,
+    setCurrentStep,
+    setHasPointerArrow
+  });
+
+  // Use the welcome hook
+  useFirstVisitWelcome(
+    true, // apprenticeReady
+    apprentice.setBubbleText,
+    apprentice.setBubbleVariant,
+    apprentice.setBubbleActions,
+    startOverviewTour
+  );
+
+  // Expose context-aware help globally for components
+  useEffect(() => {
+    (window as any).openApprenticeGuide = openApprenticeGuide;
+  }, [openApprenticeGuide]);
+
   // Models list
-  const envModel = import.meta.env.VITE_GEMINI_MODEL;
+  const envModel = (import.meta as any).env?.VITE_GEMINI_MODEL;
   const MODELS = envModel
     ? [envModel, 'gemini-2.5-flash-preview-05-20', 'gemini-2.0-flash']
     : ['gemini-2.5-flash-preview-05-20', 'gemini-2.0-flash'];
@@ -72,34 +119,112 @@ function MainPortfolio() {
     throw new Error('Studio is temporarily busy. Please try again in a moment.');
   };
 
-  const handleApprenticeQuery = async (text: string) => {
-    if (!text.trim() || loading) return;
+  const getTargetSectionFromQuery = (text: string): string | null => {
+    const q = text.toLowerCase().trim();
+    
+    if (['waiting room', 'waiting-room', 'reserve', 'booking', 'appointment', 'spot', 'slot', 'waitinglist', 'waitlist'].some(k => q.includes(k))) {
+      return 'waiting-room';
+    }
+    if (['craft dna', 'craft-dna', 'dna', 'quiz', 'match', 'style quiz'].some(k => q.includes(k))) {
+      return 'craft-dna';
+    }
+    if (['piece journey', 'piece-journey', 'provenance', 'origin', 'timeline', 'history', 'journey'].some(k => q.includes(k))) {
+      return 'piece-journey';
+    }
+    if (['process', 'how do you make', 'clay', 'throwing', 'kiln', 'glazing', 'steps', 'crafting'].some(k => q.includes(k))) {
+      return 'process';
+    }
+    if (['gallery', 'collection', 'pieces', 'artworks', 'creations', 'pottery', 'showcase'].some(k => q.includes(k))) {
+      return 'gallery';
+    }
+    if (['about', 'maker', 'who are you', 'story', 'background', 'craftsman', 'profile'].some(k => q.includes(k))) {
+      return 'about';
+    }
+    if (['philosophy', 'wabi-sabi', 'wabi sabi', 'imperfection', 'soul', 'concept'].some(k => q.includes(k))) {
+      return 'philosophy';
+    }
+    if (['testimonials', 'reviews', 'feedback', 'customers', 'collector', 'thoughts'].some(k => q.includes(k))) {
+      return 'testimonials';
+    }
+    if (['contact', 'location', 'map', 'reach', 'email', 'find you', 'address'].some(k => q.includes(k))) {
+      return 'contact';
+    }
+    if (['hero', 'intro', 'welcome', 'header', 'home'].some(k => q.includes(k))) {
+      return 'hero';
+    }
+    
+    return null;
+  };
 
+  const handleApprenticeQuery = async (text: string) => {
+    const trimmedText = text.trim();
+    if (!trimmedText || sendInFlightRef.current) return;
+
+    sendInFlightRef.current = true;
+
+    // Check for pre-built tour request
+    const q = trimmedText.toLowerCase();
+    const isTourRequest = ['tour', 'show me around', 'walk me through everything', 'overview of the site', 'guided tour', 'overview tour'].some(keyword => q.includes(keyword));
+    if (isTourRequest) {
+      apprentice.setIsOpen(false);
+      startOverviewTour();
+      sendInFlightRef.current = false;
+      return;
+    }
+
+    // Auto-scroll to matched section
+    const targetSection = getTargetSectionFromQuery(trimmedText);
+    if (targetSection) {
+      const el = document.getElementById(targetSection);
+      if (el) {
+        if (!tourActive) {
+          setReturnAnchor(window.scrollY);
+          setShowReturnPill(true);
+        }
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    const userMsgId = `u-${Date.now()}`;
+    const userMessage = { id: userMsgId, role: 'user', content: trimmedText };
+
+    // ALWAYS use functional setMessages
+    setMessages(prev => [...prev, userMessage]);
     setLoading(true);
     apprentice.setState('thinking');
     apprentice.setBubbleText(null);
     apprentice.setBubbleActions(null);
 
-    // Add user message to history
-    const userMsg = { role: 'user', content: text.trim() };
-    const updatedHistory = [...messages, userMsg].slice(-6);
-    setMessages(prev => [...prev, userMsg]);
+    const assistantMsgId = `a-${Date.now()}`;
+    // Add placeholder immediately
+    setMessages(prev => [
+      ...prev,
+      { id: assistantMsgId, role: 'assistant', content: '', typing: true }
+    ]);
 
     try {
       // ── STEP 1: RAG RETRIEVAL ────────────────────────────────────────────────
-      const retrievedDocs = retrieveWithBoost(text.trim(), 5);
+      const retrievedDocs = retrieveWithBoost(trimmedText, 5);
 
       // ── STEP 2: BUILD SYSTEM PROMPT WITH CONTEXT ─────────────────────────────
       const systemPrompt = buildSystemPrompt(retrievedDocs);
 
-      // ── STEP 3: BUILD CONVERSATION HISTORY ───────────────────────────────────
-      const history = updatedHistory.map(m => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.content }],
-      }));
+      // ── STEP 3: BUILD CONVERSATION HISTORY (Ref-backed snapshot to avoid stale closures) ────────
+      const history = messagesRef.current
+        .filter(m => !m.typing)
+        .slice(-6)
+        .map(m => ({
+          role: m.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: m.content }],
+        }));
+      // Append current user message
+      history.push({
+        role: 'user',
+        parts: [{ text: trimmedText }]
+      });
 
       // ── STEP 4: CALL GEMINI API (with retry + model fallback) ──────────────────
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+      const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY || '';
       if (!apiKey) {
         throw new Error('VITE_GEMINI_API_KEY is not set. Please add it to your .env file.');
       }
@@ -145,19 +270,26 @@ function MainPortfolio() {
         const data = await response.json();
         assistantContent =
           data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-          buildLocalResponse(text.trim(), retrievedDocs);
+          buildLocalResponse(trimmedText, retrievedDocs);
       } else {
-        assistantContent = buildLocalResponse(text.trim(), retrievedDocs);
+        assistantContent = buildLocalResponse(trimmedText, retrievedDocs);
       }
-
-      // Add to conversation history
-      setMessages(prev => [...prev, { role: 'assistant', content: assistantContent }]);
 
       // Parse the response
       const parsed = parseAIResponse(assistantContent);
 
       if (parsed.type === 'tour') {
-        // Run the guided tour
+        // Remove typing placeholder, a tour runs instead
+        setMessages(prev => prev.filter(m => m.id !== assistantMsgId));
+        
+        // Auto-close chat box panel so user can see visual tour clearly
+        apprentice.setIsOpen(false);
+
+        if (!tourActive) {
+          setReturnAnchor(window.scrollY);
+          setShowReturnPill(true);
+        }
+
         await runTour(parsed.steps, {
           setCutout,
           setState: apprentice.setState,
@@ -165,59 +297,87 @@ function MainPortfolio() {
           setBubbleText: apprentice.setBubbleText,
           setBubbleActions: apprentice.setBubbleActions,
           setTourActive,
+          setCurrentStep,
+          setHasPointerArrow,
           voiceEnabled: isVoiceOutputEnabled()
         });
+
       } else {
-        // Simple text response
-        apprentice.setState('speaking');
-        apprentice.setBubbleText(parsed.content);
-        
-        // Define simple close action
-        apprentice.setBubbleActions([
-          {
-            label: 'Close',
-            onClick: () => {
+        // Plain text response - update placeholder in place
+        setMessages(prev => prev.map(m =>
+          m.id === assistantMsgId
+            ? { ...m, content: parsed.content ?? '', typing: false }
+            : m
+        ));
+
+        // Detect JSON response format (e.g. overview)
+        const isJson = typeof parsed.content === 'string' && parsed.content.trim().startsWith('{');
+        if (isJson) {
+          apprentice.setState('speaking');
+          apprentice.setBubbleVariant('overview');
+          const formatted = JSON.stringify(JSON.parse(parsed.content), null, 2);
+          apprentice.setBubbleText(formatted as string);
+          localStorage.setItem('apprenticeOverview', 'true');
+          localStorage.setItem('apprenticeOverviewText', formatted);
+        } else {
+          // Speak or set state
+          if (apprentice.isOpen) {
+            if (isVoiceOutputEnabled()) {
+              apprentice.setState('speaking');
+              speak(parsed.content ?? '', {
+                onEnd: () => apprentice.setState('idle')
+              });
+            } else {
               apprentice.setState('idle');
-              apprentice.setBubbleText(null);
-              apprentice.setBubbleActions(null);
+            }
+          } else {
+            apprentice.setState('speaking');
+            apprentice.setBubbleText(parsed.content ?? null);
+            apprentice.setBubbleActions([
+              {
+                label: 'Close',
+                onClick: () => {
+                  apprentice.setState('idle');
+                  apprentice.setBubbleText(null);
+                  apprentice.setBubbleActions(null);
+                  localStorage.removeItem('apprenticeOverview');
+                  localStorage.removeItem('apprenticeOverviewText');
+                }
+              }
+            ]);
+            if (isVoiceOutputEnabled()) {
+              speak(parsed.content ?? '', {
+                onEnd: () => apprentice.setState('idle')
+              });
             }
           }
-        ]);
-
-        if (isVoiceOutputEnabled()) {
-          speak(parsed.content, {
-            onEnd: () => apprentice.setState('idle')
-          });
         }
       }
     } catch (err: any) {
-      console.error(err);
+      console.error('[Apprentice] handleApprenticeQuery failed:', err);
+      // Update placeholder in place with visible friendly error
+      setMessages(prev => prev.map(m =>
+        m.id === assistantMsgId
+          ? { ...m, content: 'Sorry — I had trouble with that. Could you try asking again?', typing: false }
+          : m
+      ));
       apprentice.setState('idle');
-      apprentice.setBubbleText(err?.message || "I had trouble reaching the studio. Try typing your message or email hello@artisana.in");
-      apprentice.setBubbleActions([
-        {
-          label: 'Close',
-          onClick: () => {
-            apprentice.setBubbleText(null);
-            apprentice.setBubbleActions(null);
-          }
-        }
-      ]);
     } finally {
       setLoading(false);
+      sendInFlightRef.current = false;
     }
   };
 
   // Expose global window.openApprentice function
   useEffect(() => {
-    window.openApprentice = (query?: string) => {
+    (window as any).openApprentice = (query?: string) => {
       apprentice.setIsOpen(true);
       if (query) {
         handleApprenticeQuery(query);
       }
     };
     return () => {
-      window.openApprentice = undefined;
+      (window as any).openApprentice = undefined;
     };
   }, [apprentice]);
 
@@ -262,8 +422,21 @@ function MainPortfolio() {
 
       <Cursor />
 
+      {showReturnPill && (
+        <button
+          className="return-pill"
+          onClick={() => {
+            window.scrollTo({ top: returnAnchor || 0, behavior: 'smooth' });
+            setShowReturnPill(false);
+          }}
+          style={{ position: 'fixed', bottom: 20, left: 20, zIndex: 9999 }}
+        >
+          Return to Previous Section
+        </button>
+      )}
+
       {/* Top Scroll Progress Line */}
-      <motion.div 
+      <motion.div
         className="fixed top-0 left-0 right-0 h-[2px] bg-terra z-[99990] origin-left"
         style={{ scaleX }}
       />
@@ -271,27 +444,77 @@ function MainPortfolio() {
       <Navbar />
 
       <main>
-        <Hero preloaderDone={preloaderDone} />
-        <Marquee />
-        <About />
-        <Process />
-        <WaitingRoom />
-        <Gallery onSelectItem={(item) => setModalData(item)} />
-        <Stories />
-        <CraftDNA />
-        <Philosophy />
-        <PieceJourney />
-        <Testimonials />
-        <Contact />
+        <section id="hero">
+          <Hero preloaderDone={preloaderDone} />
+        </section>
+        <section id="about">
+          <About />
+        </section>
+        <section id="process">
+          <Process />
+        </section>
+        <section id="waiting-room">
+          <WaitingRoom />
+        </section>
+        <section id="gallery">
+          <Gallery onSelectItem={(item) => setModalData(item)} />
+        </section>
+        <section id="craft-dna">
+          <CraftDNA />
+        </section>
+        <section id="philosophy">
+          <Philosophy />
+        </section>
+        <section id="piece-journey">
+          <PieceJourney />
+        </section>
+        <section id="testimonials">
+          <Testimonials />
+        </section>
+        <section id="contact">
+          <Contact />
+        </section>
       </main>
 
       <Footer />
-      <Apprentice {...apprentice} onQuery={handleApprenticeQuery} tourActive={tourActive} />
+      <Apprentice
+        state={apprentice.state}
+        setState={apprentice.setState}
+        position={apprentice.position}
+        setPosition={apprentice.setPosition}
+        bubbleText={apprentice.bubbleText}
+        setBubbleText={apprentice.setBubbleText}
+        bubbleActions={apprentice.bubbleActions}
+        setBubbleActions={apprentice.setBubbleActions}
+        isOpen={apprentice.isOpen}
+        setIsOpen={apprentice.setIsOpen}
+        hintVisible={apprentice.hintVisible}
+        setHintVisible={apprentice.setHintVisible}
+        displayMode={apprentice.displayMode}
+        setDisplayMode={apprentice.setDisplayMode}
+        bubbleVariant={apprentice.bubbleVariant}
+        setBubbleVariant={apprentice.setBubbleVariant}
+        onQuery={handleApprenticeQuery}
+        tourActive={tourActive}
+        stepIndex={stepIndex}
+        totalSteps={8}
+        panelTitle={currentStep?.panelTitle || ''}
+        onNext={goToNextStep}
+        onBack={goToPreviousStep}
+        onDismiss={endOverviewTour}
+        preferredBubbleSide={currentStep?.apprenticePosition}
+        messages={messages}
+        loading={loading}
+      />
       <SpotlightOverlay cutout={cutout} tourActive={tourActive} />
 
-      <GalleryModal 
-        modalData={modalData} 
-        onClose={() => setModalData(null)} 
+      {tourActive && cutout && hasPointerArrow && (
+        <PointerArrow cutout={cutout} fromSide={currentStep?.apprenticePosition || 'bottom'} />
+      )}
+
+      <GalleryModal
+        modalData={modalData}
+        onClose={() => setModalData(null)}
       />
     </>
   );

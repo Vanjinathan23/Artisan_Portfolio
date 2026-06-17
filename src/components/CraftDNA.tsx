@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { quizQuestions, craftResults, calculateResult } from '../data/craftDNAData';
+import { ApprenticeHelpButton } from './ApprenticeHelpButton';
 
 type QuizPhase = 'intro' | 'question' | 'calculating' | 'result';
 
@@ -48,6 +49,15 @@ export const CraftDNA = () => {
     }
     if (quizPhase !== 'calculating') { setCalcBarWidth(0); setCalcWordIdx(0); }
   }, [quizPhase]);
+
+  // Dispatch question-change for Craft DNA guide sync
+  useEffect(() => {
+    if (quizPhase === 'question') {
+      window.dispatchEvent(new CustomEvent('artisana:dna-question-change', {
+        detail: { questionIndex: currentQ }
+      }));
+    }
+  }, [currentQ, quizPhase]);
 
   const handleOptionClick = (value: string) => {
     if (selectedOption) return;
@@ -106,6 +116,11 @@ export const CraftDNA = () => {
               </p>
               <p className="dna-intro-note">This is not a quiz about products. It is a quiet mirror. Answer slowly.</p>
               <button className="dna-start-btn btn-fill" onClick={() => setQuizPhase('question')}>Discover Your Piece →</button>
+              <ApprenticeHelpButton
+                label="Help Me Answer These Questions"
+                guideKey="craft-dna-mcq"
+                onHelpRequest={(key: string) => (window as any).openApprenticeGuide?.(key)}
+              />
             </div>
             <div className="dna-preview-grid rv-xr">
               {CRAFT_PREVIEW_IMAGES.map((img) => (
@@ -122,7 +137,7 @@ export const CraftDNA = () => {
 
       {quizPhase === 'question' && (
         <div className="wrap">
-          <div className="dna-q-wrap">
+          <div className="dna-q-wrap dna-question">
             <div className="dna-progress">
               <div className="dna-progress-squares">
                 {quizQuestions.map((_, i) => (

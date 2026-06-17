@@ -754,6 +754,87 @@ export const knowledgeBase = [
     memory and elasticity. The artisan selects clay based on what the piece needs.`
   },
 
+  {
+    id: "feature-apprentice-001",
+    category: "feature",
+    title: "The Apprentice — Studio Assistant",
+    body: `The Apprentice is the studio's interactive guide — a
+    small clay figure that lives on the website. Visitors can tap
+    it to type a question, or press and hold it to ask by voice.
+    It can explain any part of the site, walk visitors through
+    filling out forms step by step, and offers a guided overview
+    tour on each visit. It is not a generic chatbot — it knows
+    every piece, every process step, and every feature on this
+    specific site.`
+  },
+
+  {
+    id: "feature-waiting-room-form-001",
+    category: "commission",
+    title: "Waiting Room Reservation Form Fields",
+    body: `The Waiting Room reservation form, opened by clicking
+    an available commission slot, asks for: the visitor's name,
+    their email address, which craft type they're interested in
+    (pottery, jewelry, painting, or textile), a description of
+    the feeling or vision they want the piece to carry, and a
+    rough preferred timeline. After submitting, the artisan
+    confirms availability within 24 hours.`
+  },
+
+  {
+    id: "feature-craft-dna-questions-001",
+    category: "quiz",
+    title: "Craft DNA Scanner — The Five Questions",
+    body: `The Craft DNA Scanner asks five questions to match a
+    visitor to a piece: how they naturally approach mornings
+    (rushed vs. savored), how they make decisions (researched vs.
+    intuitive), what makes their favorite room feel like them,
+    what matters more between a handmade and store-bought gift,
+    and what makes a beloved object special to them. Each answer
+    contributes to a score across four craft types — pottery,
+    jewelry, painting, textile — and the highest-scoring type
+    determines the matched piece.`
+  },
+
+  {
+    id: "feature-piece-journey-provenance-001",
+    category: "provenance",
+    title: "What a Piece's Memory Page Shows",
+    body: `Each sold piece's permanent memory page (accessed via
+    QR code or directly at artisana.in/piece/[ID]) shows: the
+    exact date and time the piece was made, what the weather was
+    that morning, the material batch and its origin, the firing
+    or finishing process used, a photograph taken during the
+    making process, and a personal handwritten note from the
+    artisan to the piece's new owner.`
+  },
+
+  {
+    id: "feature-unseen-hours-001",
+    category: "journal",
+    title: "Unseen Hours — The Hidden Studio Journal",
+    body: `Unseen Hours is a private studio journal hidden at
+    artisana.in/journal, reachable through a barely-visible link
+    in the website's footer that reads "for those who stay until
+    the end." It contains raw, dated diary entries from the
+    making process — including failed attempts, late-night
+    breakthroughs, and honest doubt — shown without polish or
+    editing, exactly as written.`
+  },
+
+  {
+    id: "feature-overview-tour-001",
+    category: "feature",
+    title: "The Guided Overview Tour",
+    body: `On arriving at the site, visitors are offered a short
+    guided tour by the Apprentice, covering the hero section, the
+    artisan's story, the craft process, the Waiting Room, the
+    gallery, the Craft DNA Scanner, and The Piece's Journey. The
+    Apprentice explains each one in turn and asks permission
+    before moving to the next, so the visitor stays in control
+    of the pace throughout.`
+  }
+
 ];
 
 // ── EXPORT CATEGORY LABELS for filter display ──────────────────────

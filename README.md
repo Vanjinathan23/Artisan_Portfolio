@@ -90,10 +90,20 @@ Every design decision in this project was made with one question in mind: does t
 #### 4. 🏺 The Apprentice — A Living Craft Companion
 > *Not a chatbot. A small clay figure that came alive — who walks you through the studio like an actual visit.*
 
-- **A character, not a window.** The Apprentice idles, breathes, waves, thinks, and walks across the screen.
+- **Chat-Head resting state.** The Apprentice rests as a minimized clay head icon in the bottom-right corner with a twinkle notification sparkle badge, removing the forced welcome modal on page load.
+- **Ambient Hint Bubble.** A small, button-less, text-only hint `"I'm here to help!"` fades in 2 seconds after page load, and fades out smoothly on any scroll movement. Hovering or tapping the head re-reveals the hint.
+- **Hover & Tap Peek.** Hovering or tapping the minimized head scales it slightly (1.12x), showing a happy smile (curve eyes) and displaying the ambient hint.
+- **Full-Body Tours.** Triggers guided tours seamlessly by typing "tour" or "show me around". The Apprentice transitions to full-body, utilizes companion roaming, and walks/points throughout the studio before settling back into minimized mode when idle.
 - **Press-and-hold to talk.** No mic button — hold the Apprentice itself like a walkie-talkie. Release to send. It speaks back in a warm voice while showing captions.
 - **Guided Tours (CoC-style).** Ask "explain one of your best pieces" and the Apprentice dims the page, spotlights the exact gallery item with a glowing cutout, walks over, and explains it — then moves to the next relevant section automatically.
 - **Teaches, doesn't just answer.** Ask "how do I commission a piece" and the Apprentice spotlights the Waiting Room, points at an open slot, then walks you to the contact form — narrating each step like an in-person studio visit.
+- **Bubble Positioning:** The Apprentice's speech bubble now measures its own rendered size and intelligently flips between top/bottom/left/right placement to guarantee it (and all of its buttons) always remain fully visible on screen — including a dedicated bottom-sheet layout on mobile.
+- **Permission-Paced Tour:** Rather than auto-advancing, each tour panel asks the visitor's permission before moving to the next section — "Yes, continue →" or "I've got it for now."
+- **Step-by-Step Form Guidance:** In the Waiting Room, the Apprentice walks through the reservation form field by field — pointing at each input with an animated arrow and explaining what to enter, in plain language.
+
+**Live MCQ Coaching:** In the Craft DNA Scanner, the Apprentice gives a real-world analogy for each of the 5 questions as they appear — synced live to whichever question you're currently on. The guidance bubble updates automatically as you answer.
+
+**Pointing Arrows:** Whenever the Apprentice needs you to click something, a small animated arrow appears beside it, gently pulsing toward the element.
 
 **Animation Engineering (Duolingo-Craft Polish):**
 - **Composable Pose Library:** Data-attribute driven CSS architecture (`data-pose="walking"`) completely decouples animation logic from complex React states.
@@ -108,7 +118,7 @@ A small hand-thrown clay figurine — head, torso, arms with rounded hands, legs
 **Interaction fix:**
 The chat/voice panel opens on click (not hover) and stays open via persistent state — solving the "panel disappears while moving to type" issue entirely. Closes on outside click, ESC, re-click, or when a guided tour begins.
 
-*Tech: Web Speech API (SpeechRecognition + SpeechSynthesis, zero packages), Gemini API returns structured JSON tour scripts for navigational queries, SVG masking for the spotlight dimming effect, character built entirely in CSS (no image assets).*
+*Tech: Web Speech API (SpeechRecognition + SpeechSynthesis, zero packages), Gemini API returns structured JSON tour scripts for navigational queries, SVG masking for the spotlight dimming effect, character built entirely in CSS (no image assets). Tour guide system uses `runTourStep` engine with `wait-for-click` and event-synced MCQ guidance.*
 
 ## 🎨 Design System
 

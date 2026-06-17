@@ -44,13 +44,12 @@ export function initVoices() {
       availableVoices = window.speechSynthesis.getVoices();
       // Prefer a warm, natural-sounding voice
       selectedVoice = 
-        availableVoices.find(v => 
-          v.name.includes('Google UK English Female') ||
-          v.name.includes('Samantha') ||
-          v.name.includes('Microsoft Aria')
-        ) || 
-        availableVoices.find(v => v.lang === 'en-US' && v.name.includes('Female')) ||
-        availableVoices.find(v => v.lang.startsWith('en')) ||
+        availableVoices.find(v => v.name.includes('Google UK English Female')) ||
+        availableVoices.find(v => v.name.includes('Samantha')) ||
+        availableVoices.find(v => v.name.includes('Microsoft Aria')) ||
+        availableVoices.find(v => v.name.includes('Microsoft Jenny')) ||
+        availableVoices.find(v => v.lang === 'en-US' && v.name.toLowerCase().includes('female')) ||
+        availableVoices.find(v => v.lang.startsWith('en') && !v.name.toLowerCase().includes('robot')) ||
         availableVoices[0];
       resolve(selectedVoice);
     };
@@ -63,11 +62,32 @@ export function initVoices() {
   });
 }
 
-export function speak(text, { onStart, onEnd, rate = 0.95, pitch = 1.05 } = {}) {
+let activeUtterance = null;
+let speakTimeout = null;
+let activeUtterances = []; // Keep a list of active utterances to prevent garbage collection
+
+export function speak(text, { onStart, onEnd, rate = 0.95, pitch = 1.0 } = {}) {
   if (!window.speechSynthesis) return;
 
-  // Cancel any ongoing speech
-  window.speechSynthesis.cancel();
+  // Clear any pending speak timeouts
+  if (speakTimeout) {
+    clearTimeout(speakTimeout);
+    speakTimeout = null;
+  }
+
+  // To prevent cancelled utterances from firing their callbacks and interfering
+  // with new speech steps, neutralize their event handlers before cancelling.
+  if (activeUtterance) {
+    activeUtterance.onstart = null;
+    activeUtterance.onend = null;
+    activeUtterance.onerror = null;
+  }
+  
+  try {
+    window.speechSynthesis.cancel();
+  } catch (e) {
+    console.warn("Failed to cancel speech synthesis:", e);
+  }
 
   // Strip markdown for cleaner speech (remove **, *, #, links)
   const cleanText = text
@@ -77,28 +97,96 @@ export function speak(text, { onStart, onEnd, rate = 0.95, pitch = 1.05 } = {}) 
     .replace(/\[(.*?)\]\(.*?\)/g, '$1')
     .replace(/\n+/g, '. ');
 
-  const utterance = new SpeechSynthesisUtterance(cleanText);
-  if (selectedVoice) {
-    utterance.voice = selectedVoice;
-  } else {
-    // If voices aren't loaded yet, try initializing
-    initVoices().then(voice => {
-      if (voice) utterance.voice = voice;
-    });
-  }
-  utterance.rate = rate;
-  utterance.pitch = pitch;
-  utterance.volume = 0.75; // Lowered from 1 for a more pleasant listening experience
+  // Introduce a 100ms delay to allow the browser speech engine to finish cancellation
+  // cleanly before starting the new utterance. This avoids voice cracking/stuttering.
+  speakTimeout = setTimeout(() => {
+    const speakAction = (voice) => {
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      activeUtterance = utterance;
+      
+      // GC protection: keep a list of recent utterances
+      activeUtterances.push(utterance);
+      if (activeUtterances.length > 10) {
+        activeUtterances.shift();
+      }
 
-  utterance.onstart = () => onStart?.();
-  utterance.onend = () => onEnd?.();
-  utterance.onerror = () => onEnd?.();
+      if (voice) {
+        utterance.voice = voice;
+      }
+      utterance.rate = rate;
+      utterance.pitch = pitch;
+      utterance.volume = 0.7; // Slightly lower volume for a gentler, more premium sound
 
-  window.speechSynthesis.speak(utterance);
+      utterance.onstart = () => onStart?.();
+      utterance.onend = () => {
+        if (activeUtterance === utterance) activeUtterance = null;
+        onEnd?.();
+      };
+      utterance.onerror = () => {
+        if (activeUtterance === utterance) activeUtterance = null;
+        onEnd?.();
+      };
+
+      window.speechSynthesis.speak(utterance);
+    };
+
+    if (selectedVoice) {
+      speakAction(selectedVoice);
+    } else {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        availableVoices = voices;
+        selectedVoice = 
+          availableVoices.find(v => v.name.includes('Google UK English Female')) ||
+          availableVoices.find(v => v.name.includes('Samantha')) ||
+          availableVoices.find(v => v.name.includes('Microsoft Aria')) ||
+          availableVoices.find(v => v.name.includes('Microsoft Jenny')) ||
+          availableVoices.find(v => v.lang === 'en-US' && v.name.toLowerCase().includes('female')) ||
+          availableVoices.find(v => v.lang.startsWith('en') && !v.name.toLowerCase().includes('robot')) ||
+          availableVoices[0];
+        speakAction(selectedVoice);
+      } else {
+        let hasSpoken = false;
+        const safeSpeak = (voice) => {
+          if (hasSpoken) return;
+          hasSpoken = true;
+          speakAction(voice);
+        };
+
+        const fallbackTimeout = setTimeout(() => {
+          safeSpeak(null);
+        }, 250);
+
+        initVoices().then(voice => {
+          clearTimeout(fallbackTimeout);
+          safeSpeak(voice);
+        }).catch(() => {
+          clearTimeout(fallbackTimeout);
+          safeSpeak(null);
+        });
+      }
+    }
+  }, 100);
 }
 
 export function stopSpeaking() {
-  window.speechSynthesis?.cancel();
+  if (speakTimeout) {
+    clearTimeout(speakTimeout);
+    speakTimeout = null;
+  }
+  if (activeUtterance) {
+    activeUtterance.onstart = null;
+    activeUtterance.onend = null;
+    activeUtterance.onerror = null;
+    activeUtterance.volume = 0; // instantly mute if possible
+    activeUtterance = null;
+  }
+  try {
+    window.speechSynthesis?.cancel();
+  } catch (e) {
+    console.warn("Failed to cancel speech synthesis:", e);
+  }
+  activeUtterances = [];
 }
 
 export function isVoiceOutputEnabled() {
@@ -113,4 +201,9 @@ export function setVoiceOutputEnabled(enabled) {
 export function isSpeechSupported() {
   // @ts-ignore
   return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+
+// Automatically initialize voices on load
+if (typeof window !== 'undefined' && window.speechSynthesis) {
+  initVoices();
 }

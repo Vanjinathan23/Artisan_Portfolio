@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { queue, slots } from '../data/waitingRoomData';
+import { ApprenticeHelpButton } from './ApprenticeHelpButton';
 
 interface Reservation {
   slotId: number;
@@ -32,6 +33,7 @@ export const WaitingRoom = () => {
   const [activeSlotId, setActiveSlotId] = useState<number | null>(null);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const sectionRef = useRef<HTMLElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -73,6 +75,7 @@ export const WaitingRoom = () => {
   const openReserveModal = (slotId: number) => {
     setActiveSlotId(slotId);
     setForm(EMPTY_FORM);
+    setErrorMessage('');
     setModalView('form');
     setModalOpen(true);
   };
@@ -88,20 +91,42 @@ export const WaitingRoom = () => {
     setModalView('form');
     setActiveSlotId(null);
     setForm(EMPTY_FORM);
+    setErrorMessage('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage('');
     setModalView('sending');
-    setTimeout(() => {
-      const newReservation: Reservation = {
-        slotId: activeSlotId!,
-        ...form,
-        ref: `SLOT-00${activeSlotId}`,
-      };
-      setReservations((prev) => [...prev, newReservation]);
-      setModalView('success');
-    }, 1400);
+
+    try {
+      const response = await fetch('/api/waiting-room', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          slotId: activeSlotId,
+          ...form
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const newReservation: Reservation = {
+          slotId: activeSlotId!,
+          ...form,
+          ref: `SLOT-00${activeSlotId}`,
+        };
+        setReservations((prev) => [...prev, newReservation]);
+        setModalView('success');
+      } else {
+        setErrorMessage(data.error || 'Something went wrong. Please try again.');
+        setModalView('form');
+      }
+    } catch (error) {
+      setErrorMessage('Network error. Please try again later.');
+      setModalView('form');
+    }
   };
 
   const handleCancelConfirm = () => {
@@ -183,7 +208,7 @@ export const WaitingRoom = () => {
                   <div
                     key={slot.id}
                     ref={(el) => { cardRefs.current[i] = el; }}
-                    className="wr-card-reveal slot-card slot-reserved"
+                    className="wr-card-reveal wr-visible slot-card slot-reserved"
                     data-slot={slot.id}
                     style={{ transitionDelay: `${i * 0.08}s` }}
                   >
@@ -243,6 +268,15 @@ export const WaitingRoom = () => {
               <span className="wt-value">Week 5–7</span>
             </div>
           </div>
+
+          {/* Apprentice Help Button */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+            <ApprenticeHelpButton
+              label="Walk Me Through Reserving a Slot"
+              guideKey="waiting-room-form"
+              onHelpRequest={(key: string) => (window as any).openApprenticeGuide?.(key)}
+            />
+          </div>
         </div>
       </section>
 
@@ -269,6 +303,12 @@ export const WaitingRoom = () => {
               <p className="wr-modal-subtext">
                 Tell me what you're imagining. I'll confirm availability within 24 hours.
               </p>
+
+              {errorMessage && (
+                <div className="mb-4 text-[#ff6b6b] text-[0.8rem] text-center font-body border border-[#ff6b6b]/20 p-3 bg-[#ff6b6b]/10">
+                  {errorMessage}
+                </div>
+              )}
 
               <form className="wr-form" onSubmit={handleSubmit} noValidate>
                 {/* Name */}
@@ -304,7 +344,7 @@ export const WaitingRoom = () => {
                 {/* Craft Type */}
                 <div className="wr-field">
                   <select
-                    id="wr-craft"
+                    id="wr-craft-type"
                     value={form.craftType}
                     onChange={(e) => setForm((f) => ({ ...f, craftType: e.target.value }))}
                     className="wr-select"
@@ -349,7 +389,7 @@ export const WaitingRoom = () => {
                   </select>
                 </div>
 
-                <button type="submit" className="wr-submit">
+                <button type="submit" className="wr-submit wr-submit-btn">
                   Reserve This Slot
                 </button>
               </form>

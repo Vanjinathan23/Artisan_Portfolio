@@ -1,52 +1,81 @@
 import { speak } from './voiceEngine.js';
+import { scrollToSectionSmooth } from './navigationEngine.js';
 
 export function parseAIResponse(rawText) {
+  if (!rawText || typeof rawText !== 'string') {
+    return { type: 'text', content: "I'm not sure how to answer that — could you try rephrasing?" };
+  }
+
   const trimmed = rawText.trim();
-  
-  // Check if response looks like JSON
-  if (trimmed.startsWith('{') && trimmed.includes('"type"')) {
+
+  // ── STEP 1: Try to extract JSON from common wrapping patterns ──
+
+  let candidate = trimmed;
+
+  // Pattern A: ```json { ... } ```
+  const fencedJsonMatch = trimmed.match(/```json\s*([\s\S]*?)```/i);
+  if (fencedJsonMatch) {
+    candidate = fencedJsonMatch[1].trim();
+  } else {
+    // Pattern B: ``` { ... } ``` (no language tag)
+    const fencedMatch = trimmed.match(/```\s*([\s\S]*?)```/);
+    if (fencedMatch && fencedMatch[1].trim().startsWith('{')) {
+      candidate = fencedMatch[1].trim();
+    } else {
+      // Pattern C: JSON object embedded anywhere in the text —
+      // find the first '{' and the LAST matching '}' that
+      // produces valid JSON. Use a greedy brace match.
+      const firstBrace = trimmed.indexOf('{');
+      const lastBrace = trimmed.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace > firstBrace) {
+        candidate = trimmed.slice(firstBrace, lastBrace + 1);
+      }
+    }
+  }
+
+  // ── STEP 2: Attempt to parse the candidate as JSON ──────────────
+
+  if (candidate.startsWith('{')) {
     try {
-      const parsed = JSON.parse(trimmed);
+      const parsed = JSON.parse(candidate);
+
       if (parsed.type === 'tour' && Array.isArray(parsed.steps)) {
-        // Validate each step has required fields
-        const validSteps = parsed.steps.filter(s => 
+        const validSteps = parsed.steps.filter(s =>
+          s && typeof s === 'object' &&
           s.targetSelector && s.sectionId && s.text
         );
+
         if (validSteps.length > 0) {
           return { type: 'tour', steps: validSteps.slice(0, 4) };
         }
       }
+      // Parsed JSON but not a valid tour shape — fall through to text
     } catch (e) {
       // Not valid JSON — fall through to text
+      console.warn('[Apprentice] Failed to parse tour JSON:', e.message);
     }
   }
-  
-  // Default: plain text response
-  return { type: 'text', content: rawText };
+
+  // ── STEP 3: Plain text fallback ─────────────────────────────────
+  // Strip any leftover code fences so they never render as raw text
+  const cleaned = trimmed
+    .replace(/```json\s*[\s\S]*?```/gi, '')
+    .replace(/```\s*[\s\S]*?```/g, '')
+    .trim();
+
+  return {
+    type: 'text',
+    content: cleaned.length > 0
+      ? cleaned
+      : "Let me find that for you — one moment."
+  };
 }
 
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function scrollToSection(sectionId, { delay = 0, offset = -100 } = {}) {
-  if (sectionId === 'gallery') {
-    window.dispatchEvent(new CustomEvent('artisana:reset-gallery-filter'));
-  }
 
-  const el = document.getElementById(sectionId);
-  if (!el) return;
-
-  const bodyRect = document.body.getBoundingClientRect().top;
-  const elementRect = el.getBoundingClientRect().top;
-  const elementPosition = elementRect - bodyRect;
-  const offsetPosition = elementPosition + offset;
-
-  window.scrollTo({
-    top: offsetPosition,
-    behavior: 'smooth'
-  });
-}
 
 function getCutoutRect(selector) {
   const el = document.querySelector(selector);
@@ -100,38 +129,84 @@ function calculateApprenticePosition(cutout, side) {
   return { x: boundedX, y: boundedY };
 }
 
-async function runTourStep(step, { 
+export async function runTourStep(step, { 
   setCutout, setState, setPosition, setBubbleText, 
-  setBubbleActions, setTourActive, voiceEnabled 
+  setBubbleActions, setTourActive, voiceEnabled,
+  setCurrentStep, setHasPointerArrow
 }) {
   
-  // 1. Scroll to section first
+  // Update step tracking for PointerArrow
+  if (setCurrentStep) setCurrentStep(step);
+  if (setHasPointerArrow) setHasPointerArrow(!!step.pointerArrow);
+
+  // 1. Scroll to section first (if sectionId is present)
   setTourActive(true);
-  scrollToSection(step.sectionId, { delay: 0, offset: -120 });
+  if (step.sectionId) {
+    if (step.sectionId === 'gallery') {
+      window.dispatchEvent(new CustomEvent('artisana:reset-gallery-filter'));
+    }
+    scrollToSectionSmooth(step.sectionId, { delay: 0, offset: -120 });
+  }
 
   // 2. Wait for scroll to settle
   await wait(900);
 
   // 3. Calculate cutout position
   const cutout = getCutoutRect(step.targetSelector);
-  if (!cutout) {
-    // Element not found — skip gracefully
-    return false;
+  if (!cutout && step.targetSelector) {
+    // If target selector is present but not found, check if it's wait-for-click
+    if (step.action === 'wait-for-click' && document.querySelector(step.waitForSelector)) {
+       // Target missing but the result is already here? (edge case)
+    } else {
+       // Element not found — skip gracefully
+       return false;
+    }
   }
   setCutout(cutout);
 
-  // 4. Calculate apprentice walk-to position based on
-  //    apprenticePosition ('left'/'right'/'top'/'bottom')
-  const apprenticePos = calculateApprenticePosition(cutout, step.apprenticePosition);
-  
-  // 5. Walk apprentice to position
-  setState('walking');
-  setPosition(apprenticePos);
-  await wait(1200);
+  // Keep the Apprentice fixed at the bottom-right corner
+  setPosition({ x: null, y: null });
+  await wait(200);
 
   // 6. Apprentice arrives — point + show bubble
   setState('pointing');
   setBubbleText(step.text);
+  
+  // 6b. Wait for Click action
+  if (step.action === 'wait-for-click') {
+    // No Next button until they click
+    setBubbleActions(null); 
+    if (voiceEnabled) {
+      setState('speaking');
+      speak(step.text, { onEnd: () => setState('pointing') });
+    }
+    return new Promise((resolve) => {
+      const target = document.querySelector(step.targetSelector);
+      if (!target) { resolve(true); return; }
+
+      function onUserClick() {
+        target.removeEventListener('click', onUserClick);
+
+        if (step.waitForSelector) {
+          // Wait for the resulting element (e.g. modal) to appear
+          const observer = new MutationObserver(() => {
+            if (document.querySelector(step.waitForSelector)) {
+              observer.disconnect();
+              resolve(true);
+            }
+          });
+          observer.observe(document.body, { childList: true, subtree: true });
+          // Safety timeout
+          setTimeout(() => { observer.disconnect(); resolve(true); }, 3000);
+        } else {
+          resolve(true);
+        }
+      }
+
+      target.addEventListener('click', onUserClick);
+    });
+  }
+
   setBubbleActions(step.actions);
 
   // 7. Speak if voice enabled

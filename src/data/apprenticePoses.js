@@ -41,6 +41,15 @@ export const apprenticePoses = {
     headTilt: -4,
     bodyLean: 0
   },
+  'hover-greeting': {
+    armL: 'point',
+    armR: 'rest',
+    legs: 'standing',
+    eyes: 'normal',
+    smile: 'hidden',
+    headTilt: 0,
+    bodyLean: 0
+  },
   'listening': {
     armL: 'rest',
     armR: 'rest',

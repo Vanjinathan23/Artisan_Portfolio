@@ -44,3 +44,62 @@ export function detectNavigationIntent(query) {
   if (/story|stories/.test(q)) return 'stories';
   return null;
 }
+
+export function scrollToSection(sectionId, options = {}) {
+  const { delay = 400, offset = -80 } = options;
+
+  setTimeout(() => {
+    const el = document.getElementById(sectionId);
+    if (!el) {
+      console.warn(`[Apprentice] scrollToSection: no element with id="${sectionId}"`);
+      return;
+    }
+
+    const top = el.getBoundingClientRect().top
+      + window.pageYOffset
+      + offset;
+
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: 'smooth'   // ← MUST remain 'smooth', never 'auto'/'instant'
+    });
+  }, delay);
+}
+
+export function scrollToSectionSmooth(sectionId, options = {}) {
+  const { delay = 400, offset = -80, minDuration = 900, maxDuration = 1800 } = options;
+
+  setTimeout(() => {
+    const el = document.getElementById(sectionId);
+    if (!el) return;
+
+    const startY = window.pageYOffset;
+    const targetY = Math.max(0,
+      el.getBoundingClientRect().top + startY + offset
+    );
+    const distance = targetY - startY;
+    const duration = Math.min(
+      maxDuration,
+      Math.max(minDuration, Math.abs(distance) / 1.5)
+    );
+
+    const startTime = performance.now();
+
+    function step(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // easeInOutCubic
+      const eased = progress < 0.5
+        ? 4 * Math.pow(progress, 3)
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      window.scrollTo(0, startY + distance * eased);
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    }
+
+    requestAnimationFrame(step);
+  }, delay);
+}
