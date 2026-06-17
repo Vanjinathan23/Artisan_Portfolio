@@ -833,6 +833,301 @@ export const knowledgeBase = [
     Apprentice explains each one in turn and asks permission
     before moving to the next, so the visitor stays in control
     of the pace throughout.`
+  },
+
+  // ── WEBSITE STRUCTURE & NAVIGATION ──────────────────────────────
+
+  {
+    id: "site-structure-001",
+    category: "feature",
+    title: "Artisana Website — Full Page Structure and Section Order",
+    body: `The Artisana portfolio website is a single-page application with sections in this order:
+    1. HERO — Full-screen introduction with the studio name, tagline, and craft statement.
+    2. ABOUT — The artisan's background, origin story, and studio identity.
+    3. PROCESS — 7-step craft process shown as step cards (Material Selection → Shaping → Refinement → Slow Drying → Bisque Fire → Glazing Ritual → Final Piece).
+    4. WAITING ROOM — Live commission slot availability (5 slots total, clickable open slots open a reservation form).
+    5. GALLERY — 8 gallery pieces shown as image cards (Morning Calm, Ember Ring, Rainy Season, Woven Dusk, Earth Vessel, Gold Drift, First Light, Midnight Cup).
+    6. CRAFT DNA — 5-question interactive quiz matching visitor to a craft archetype.
+    7. PHILOSOPHY — Three pillars: Handmade Always, Sustainable Materials, Traditional Techniques.
+    8. PIECE'S JOURNEY — Digital provenance system, QR code explainer, shows 3 piece memory pages.
+    9. TESTIMONIALS — Reviews from 5 piece owners.
+    10. CONTACT — Studio address, email, phone, contact form.
+    Footer with social links and the hidden journal link.
+    Navigation bar at the top links to all main sections.`
+  },
+
+  {
+    id: "site-structure-002",
+    category: "feature",
+    title: "Page Section IDs and CSS Selectors — Complete Map",
+    body: `All section element IDs on the website for navigation and tour purposes:
+    #hero — Hero/intro section
+    #about — About the artisan
+    #process — 7-step craft process
+    #waiting-room — Commission slots / reservation
+    #gallery — 8-piece gallery grid
+    #craft-dna — DNA Scanner quiz
+    #philosophy — Studio philosophy
+    #piece-journey — Digital provenance / QR
+    #testimonials — Customer reviews
+    #contact — Contact form and details
+    Key child selectors:
+    .gi[data-idx="0"] through [data-idx="7"] — individual gallery cards (0=Morning Calm, 1=Ember Ring, 2=Rainy Season, 3=Woven Dusk, 4=Earth Vessel, 5=Gold Drift, 6=First Light, 7=Midnight Cup)
+    .pc[data-step="1"] through [data-step="4"] — process step cards (1=Material, 2=Shaping, 3=Bisque, 4=Glazing)
+    .slot-card[data-slot="1"] through [data-slot="5"] — commission slots (4 and 5 are open/available)
+    .contact-form — the contact/enquiry form
+    #craft-dna .btn-fill — the 'Scan My Craft DNA' start button
+    .s-item[data-piece="0"] through [data-piece="2"] — story blocks (Morning Calm, Ember Ring, Rainy Season)`
+  },
+
+  // ── HERO SECTION ──────────────────────────────────────────────────
+
+  {
+    id: "section-hero-001",
+    category: "feature",
+    title: "Hero Section — What It Contains",
+    body: `The Hero section is the first thing visitors see on the Artisana website.
+    It fills the full screen and contains: the studio name 'Artisana', the tagline
+    'Handcrafted with Soul', and a poetic craft statement about the philosophy of slow making.
+    There is also a craft video or animation that shows a piece being formed.
+    The hero section uses a dark, moody aesthetic with warm amber and terra-cotta tones.
+    Visitors can scroll down from here to explore the rest of the studio.
+    The navigation bar sits above the hero and links to all major sections.`
+  },
+
+  // ── ABOUT SECTION ─────────────────────────────────────────────────
+
+  {
+    id: "section-about-001",
+    category: "feature",
+    title: "About Section — What It Contains",
+    body: `The About section tells the story of the artisan and the studio.
+    It covers: how Artisana was founded in 2018 during a silent retreat, the opening of the
+    studio in a 200 sq ft room in 2019, the first exhibition in 2020, and the growth to 300+
+    unique pieces and 12+ exhibitions by 2024. It also highlights the four craft disciplines
+    (pottery, jewelry, painting, textile) and the philosophy that every piece carries the
+    memory of its making. The section uses full-bleed photography and italic pull quotes.`
+  },
+
+  // ── PROCESS SECTION ───────────────────────────────────────────────
+
+  {
+    id: "section-process-001",
+    category: "feature",
+    title: "Process Section — 7 Steps Displayed as Cards",
+    body: `The Process section shows Artisana's 7-step craft process as interactive step cards.
+    Each card has a step number, a title, and a short description.
+    Step 1 — Material Selection: clay tested by hand for texture and memory.
+    Step 2 — The Shaping: hands meet clay on the wheel, no molds.
+    Step 3 — Refinement: drying, trimming, and texturing.
+    Step 4 — Slow Drying: moisture leaves naturally over weeks.
+    Step 5 — The Bisque Fire: 900°C transforms earth into stone.
+    Step 6 — Glazing Ritual: hand-applied minerals from the landscape.
+    Step 7 — The Final Piece: 1280°C for 9 hours.
+    CSS selectors: .pc[data-step="1"] through .pc[data-step="4"] target the visible cards.`
+  },
+
+  // ── WAITING ROOM SECTION ──────────────────────────────────────────
+
+  {
+    id: "section-waitingroom-001",
+    category: "feature",
+    title: "Waiting Room Section — Commission Slot UI",
+    body: `The Waiting Room section shows the live availability of commission slots.
+    There are 5 total slots per month, displayed as individual slot cards.
+    Slots 1–3 are currently in progress (filled). Slots 4 and 5 are open (available).
+    Each slot card shows: slot number, status (In Progress / Available), and for filled slots
+    shows the commission type and city (e.g. 'Pottery Tea Set — Mumbai').
+    Clicking an available slot (4 or 5) opens a reservation modal/form.
+    The Apprentice can guide users through this form step by step.
+    CSS selectors: .slot-card[data-slot="4"] and [data-slot="5"] are the clickable open slots.`
+  },
+
+  {
+    id: "section-waitingroom-form-001",
+    category: "feature",
+    title: "Waiting Room Reservation Form — All Fields",
+    body: `When a visitor clicks an available commission slot in the Waiting Room, a reservation
+    form opens. The form collects:
+    — Name (text field, required)
+    — Email address (email field, required)
+    — Craft type preference (radio or select: Pottery / Jewelry / Painting / Textile)
+    — Vision or feeling description (textarea: what you want the piece to carry, who it's for)
+    — Preferred timeline (text or select)
+    After submission, the artisan confirms availability within 24 hours via email.
+    The Apprentice can walk users through each field using the 'Waiting Room Guide' tour.`
+  },
+
+  // ── GALLERY SECTION ───────────────────────────────────────────────
+
+  {
+    id: "section-gallery-001",
+    category: "feature",
+    title: "Gallery Section — 8 Pieces Displayed",
+    body: `The Gallery section displays 8 handcrafted pieces from Artisana in a grid layout.
+    Each gallery item (gi) has an index from 0 to 7:
+    Index 0 — Morning Calm (Pottery Vessel, stoneware, iron oxide glaze)
+    Index 1 — Ember Ring (Copper Ring, hammered, no molds)
+    Index 2 — Rainy Season (Linen Painting, mineral pigments)
+    Index 3 — Woven Dusk (Handwoven Scarf, silk and cotton)
+    Index 4 — Earth Vessel (Pottery Bowl, unglazed exterior)
+    Index 5 — Gold Drift (22k Gold Leaf Pendant)
+    Index 6 — First Light (Dawn Painting on linen)
+    Index 7 — Midnight Cup (Dark-glazed Tea Cup)
+    Clicking any gallery piece opens a modal with the full piece details.
+    Gallery pieces can be filtered by craft type.
+    CSS selectors: .gi[data-idx="0"] through .gi[data-idx="7"]`
+  },
+
+  // ── CRAFT DNA SECTION ─────────────────────────────────────────────
+
+  {
+    id: "section-craftdna-001",
+    category: "feature",
+    title: "Craft DNA Scanner Section — UI and Interaction",
+    body: `The Craft DNA Scanner section sits between Stories and Philosophy on the website.
+    It begins with a brief intro explaining what the scanner does, then a prominent button
+    labeled 'Scan My Craft DNA' (selector: #craft-dna .btn-fill).
+    Clicking starts the 5-question quiz in-place.
+    Progress is shown with a question counter. Each question has 4 radio-button options.
+    After all 5 answers, the result is displayed: one of four archetypes with a matched piece.
+    The Apprentice can guide users through this quiz using the 'Craft DNA Guide' tour,
+    explaining each question as it appears and celebrating the result.`
+  },
+
+  // ── PHILOSOPHY SECTION ────────────────────────────────────────────
+
+  {
+    id: "section-philosophy-001",
+    category: "feature",
+    title: "Philosophy Section — Three Pillars",
+    body: `The Philosophy section articulates Artisana's three core beliefs:
+    Pillar 1 — Handmade Always: No machines, no molds, no shortcuts. Every piece is made
+    entirely by hand from start to finish.
+    Pillar 2 — Sustainable Materials: All materials are earth-sourced and responsibly gathered.
+    Rajasthan stoneware, single-mine copper, mulberry silk, natural dyes.
+    Pillar 3 — Traditional Techniques: Methods passed through generations, unchanged by trend.
+    The section uses large typographic treatments and calm imagery.
+    The wabi-sabi philosophy (finding beauty in imperfection) runs through everything the studio makes.`
+  },
+
+  // ── PIECE'S JOURNEY SECTION ───────────────────────────────────────
+
+  {
+    id: "section-piecejourney-001",
+    category: "feature",
+    title: "Piece's Journey Section — Digital Provenance UI",
+    body: `The Piece's Journey section explains and demonstrates the provenance system.
+    It shows 3 example memory pages (Morning Calm AM-001, Ember Ring AM-002, Rainy Season AM-003).
+    Each preview shows: the piece name, reference ID, date made, weather, materials,
+    firing details, a process photo, and the artisan's personal note to the owner.
+    There is a QR code explainer showing how owners receive their QR code.
+    Direct URLs follow the pattern: artisana.in/piece/AM-001, artisana.in/piece/AM-002, etc.
+    The Apprentice can guide users through the journey system with a dedicated tour.`
+  },
+
+  // ── TESTIMONIALS SECTION ──────────────────────────────────────────
+
+  {
+    id: "section-testimonials-001",
+    category: "feature",
+    title: "Testimonials Section — 5 Customer Reviews",
+    body: `The Testimonials section displays 5 verified customer reviews.
+    Review 1: Priya Mehta — Morning Calm: "I placed it by my window and it changed how I start my day. It is not just an object — it breathes."
+    Review 2: James Holloway — Ember Ring: "My wife cried when she saw it. Not because it was expensive. Because it looked like it understood her."
+    Review 3: Aiko Tanaka — Woven Dusk: "The craftsmanship is unlike anything I found in galleries twice the price. This is the real thing."
+    Review 4: Leila Rostami — Midnight Cup Set: "Tea tastes different in these cups. Whoever made them put something invisible in the clay."
+    Review 5: Marcus Wren — Forest Clasp: "Three people asked if it was vintage. No — it is brand new and already timeless."
+    Reviews are displayed in an elegant card layout with customer name and piece name.`
+  },
+
+  // ── CONTACT SECTION ───────────────────────────────────────────────
+
+  {
+    id: "section-contact-001",
+    category: "feature",
+    title: "Contact Section — Form and Studio Details",
+    body: `The Contact section contains:
+    Studio address: Studio 4, Artisan Quarter, Chennai, India.
+    Email: hello@artisana.in (response within 24 hours).
+    Phone: +91 99999 99999.
+    Hours: Tuesday–Saturday, 10am–6pm (by appointment).
+    The contact form (selector: .contact-form) has fields for: Name, Email, Subject, and Message.
+    There is also a map embed showing the studio location in Chennai.
+    Social links for Instagram, Pinterest, YouTube, and Behance appear at the bottom.
+    The footer contains a barely visible link 'for those who stay until the end' leading to
+    the hidden journal at artisana.in/journal.`
+  },
+
+  // ── APPRENTICE FEATURES ───────────────────────────────────────────
+
+  {
+    id: "apprentice-features-001",
+    category: "feature",
+    title: "The Apprentice — All Features and Capabilities",
+    body: `The Apprentice is the studio's AI-powered interactive guide visible as a clay figure
+    in the bottom-right corner of every page. Full feature list:
+    1. TEXT CHAT — Open the chat panel by clicking the figure. Type any question and press Enter.
+    2. VOICE INPUT — Press and hold the figure to speak your question aloud.
+    3. VOICE OUTPUT — Toggle voice responses on/off with the speaker icon.
+    4. GUIDED OVERVIEW TOUR — Says 'show me around' or 'take me on a tour' for a full guided walk.
+    5. SECTION NAVIGATION — Ask 'where is the waiting room?' to be scrolled and shown that section.
+    6. FORM GUIDANCE — Ask 'help me fill this form' in the Waiting Room for step-by-step help.
+    7. CRAFT DNA GUIDE — Ask 'help me with the quiz' during the DNA scanner for question explanations.
+    8. PIECE JOURNEY EXPLAINER — Ask about 'the piece journey' for a guided explanation.
+    9. CHAT HISTORY — Full conversation history shown in the chat panel.
+    10. RETURN PILL — After a navigation, a 'Return to Previous Section' pill appears to go back.
+    The Apprentice knows every piece, every process step, every form field, and all studio information.`
+  },
+
+  {
+    id: "apprentice-features-002",
+    category: "feature",
+    title: "Apprentice — How to Trigger Tours and Navigation",
+    body: `Phrases that trigger specific Apprentice behaviors:
+    Overview tour: 'show me around', 'tour', 'guided tour', 'walk me through everything'
+    Navigate to section: 'where is [section name]', 'show me the gallery', 'take me to contact'
+    Waiting Room guide: 'help me reserve a slot', 'guide me through the form', 'how do I commission'
+    Craft DNA guide: 'help me with the quiz', 'explain the craft DNA', 'scan my DNA'
+    Piece Journey guide: 'explain the journey', 'what is the provenance', 'how does the QR code work'
+    Gallery tour: 'show me the best pieces', 'explain the collection', 'walk me through the gallery'
+    The Apprentice always responds in character — warm, knowledgeable, slightly poetic — never robotic.
+    If it cannot answer something, it honestly says so and suggests emailing hello@artisana.in.`
+  },
+
+  // ── RAGENGINE CONTEXT ─────────────────────────────────────────────
+
+  {
+    id: "rag-context-001",
+    category: "feature",
+    title: "How the Apprentice AI Works — RAG System",
+    body: `The Apprentice uses a Retrieval-Augmented Generation (RAG) system to answer questions.
+    When you ask a question, the system searches the local knowledge base for the most relevant
+    documents using TF-IDF keyword scoring. The top 5 matched documents are injected as context
+    into a Gemini API call along with a detailed system prompt defining the studio persona.
+    This means the AI always answers from real Artisana data — never inventing facts.
+    If the API is unavailable, a fully local fallback engine generates warm, on-brand responses
+    from the same knowledge base without any external calls.
+    The system supports multi-turn conversation history (last 6 messages sent as context).`
+  },
+
+  // ── OVERVIEW TOUR STEPS ───────────────────────────────────────────
+
+  {
+    id: "overview-tour-001",
+    category: "feature",
+    title: "Guided Overview Tour — 8 Steps",
+    body: `The Guided Overview Tour visits 8 sections in order:
+    Step 1 — Hero: Introduction to Artisana, tagline and craft statement.
+    Step 2 — About: The artisan's story, origin, and studio identity.
+    Step 3 — Process: The 7-step craft process explained.
+    Step 4 — Waiting Room: Commission slots and how to reserve one.
+    Step 5 — Gallery: The 8-piece collection overview.
+    Step 6 — Craft DNA: The personality quiz and how it works.
+    Step 7 — Piece's Journey: The digital provenance and QR system.
+    Step 8 — Contact: How to reach the studio and start a commission.
+    During each step the Apprentice walks to the section, highlights the key UI element
+    with a spotlight, and explains it. The visitor controls the pace with Next/Back buttons.`
   }
 
 ];
@@ -841,5 +1136,5 @@ export const knowledgeBase = [
 export const knowledgeCategories = [
   'studio', 'pottery', 'jewelry', 'painting',
   'textile', 'commission', 'process', 'faq',
-  'provenance', 'journal', 'quiz', 'testimonial', 'story'
+  'provenance', 'journal', 'quiz', 'testimonial', 'story', 'feature'
 ];
